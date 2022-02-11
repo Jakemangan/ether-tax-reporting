@@ -1,0 +1,84 @@
+{
+    "to": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D", //OUT (SELL)
+    "from": "0x7CbBba14C573fA52Aadad44C7aE8085dC0764ebd",
+    "contractAddress": null,
+    "transactionIndex": 51,
+    "gasUsed": {
+        "type": "BigNumber",
+        "hex": "0x03eb86"
+    },
+    "logsBloom": "0x00200000000000000000000080000000000000000800000800010000010200000000080000400000000000000008000002000200080000000000000000200000000000000000000000000008000000200000000001400000080000000000000000000000000000000000000000000000000000000000040000000010000000000000000000000000004000000000000000000000000000080000004000000000020000000080000000000000020000000000000000000000000000000000040000000002000000000000000000000800000000000000001000000002000020000010200000000000000000000000000000000000000000000000000000000200",
+    "blockHash": "0x57e3b41f6b716fe3e8d5e9ad2305f2ab49ae50696f373d4938f54bd7ac5ddfe0",
+    "transactionHash": "0xe4d29099546c49e1fa2d912f930f23415295ae76f88febf0bdb7b9ebc337203b",
+    "logs": [
+        {
+            "transactionIndex": 51,
+            "blockNumber": 13771810,
+            "transactionHash": "0xe4d29099546c49e1fa2d912f930f23415295ae76f88febf0bdb7b9ebc337203b",
+            "address": "0x8Cde35f711fc72CEC61c1182B9A20DFFb48f1B64", //Sherman
+            "topics": [
+                "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", //Transfer
+                "0x0000000000000000000000008cde35f711fc72cec61c1182b9a20dffb48f1b64", //Sherman
+                "0x000000000000000000000000d102d6b6bd1602b3d02be91cc6b9383c22c9d2d3" //Uniswap v2 - Sherman
+            ],
+            "data": "0x00000000000000000000000000000000000000000000000005d79c037225a13a",
+            "logIndex": 85,
+            "blockHash": "0x57e3b41f6b716fe3e8d5e9ad2305f2ab49ae50696f373d4938f54bd7ac5ddfe0"
+        },
+        {
+            "transactionIndex": 51,
+            "blockNumber": 13771810,
+            "transactionHash": "0xe4d29099546c49e1fa2d912f930f23415295ae76f88febf0bdb7b9ebc337203b",
+            "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", //WETH
+            "topics": [
+                "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", //Transfer
+                "0x000000000000000000000000d102d6b6bd1602b3d02be91cc6b9383c22c9d2d3",  //Uniswap v2 - Sherman
+                "0x0000000000000000000000007a250d5630b4cf539739df2c5dacb4c659f2488d" //Uniswap v2 router
+            ],
+            "data": "0x0000000000000000000000000000000000000000000000000080b092f117b7e3",
+            "logIndex": 87,
+            "blockHash": "0x57e3b41f6b716fe3e8d5e9ad2305f2ab49ae50696f373d4938f54bd7ac5ddfe0"
+        },
+        {
+            "transactionIndex": 51,
+            "blockNumber": 13771810,
+            "transactionHash": "0xe4d29099546c49e1fa2d912f930f23415295ae76f88febf0bdb7b9ebc337203b",
+            "address": "0x8Cde35f711fc72CEC61c1182B9A20DFFb48f1B64", //Sherman
+            "topics": [
+                "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", //Transfer
+                "0x0000000000000000000000007cbbba14c573fa52aadad44c7ae8085dc0764ebd", //Me
+                "0x000000000000000000000000d102d6b6bd1602b3d02be91cc6b9383c22c9d2d3" //Uniswap v2 - Sherman
+            ],
+            "data": "0x0000000000000000000000000000000000000000000000002abd5cbf6019dd53", //3.079B sherman sold
+            "logIndex": 91,
+            "blockHash": "0x57e3b41f6b716fe3e8d5e9ad2305f2ab49ae50696f373d4938f54bd7ac5ddfe0"
+        },
+        {
+            "transactionIndex": 51,
+            "blockNumber": 13771810,
+            "transactionHash": "0xe4d29099546c49e1fa2d912f930f23415295ae76f88febf0bdb7b9ebc337203b",
+            "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", //WETH
+            "topics": [
+                "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", //Transfer
+                "0x000000000000000000000000d102d6b6bd1602b3d02be91cc6b9383c22c9d2d3", //Uniswap v2 - Sherman
+                "0x0000000000000000000000007a250d5630b4cf539739df2c5dacb4c659f2488d" //Uniswap v2 router
+            ],
+            "data": "0x000000000000000000000000000000000000000000000000038c1c63d11988d5", //0.255 WETH received
+            "logIndex": 93,
+            "blockHash": "0x57e3b41f6b716fe3e8d5e9ad2305f2ab49ae50696f373d4938f54bd7ac5ddfe0"
+        }
+    ],
+    "blockNumber": 13771810,
+    "confirmations": 337111,
+    "cumulativeGasUsed": {
+        "type": "BigNumber",
+        "hex": "0x44bfab"
+    },
+    "effectiveGasPrice": {
+        "type": "BigNumber",
+        "hex": "0x1eee9cd36d"
+    },
+    "status": 1,
+    "type": 0,
+    "byzantium": true
+}

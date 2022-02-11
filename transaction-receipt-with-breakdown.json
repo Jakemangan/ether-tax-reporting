@@ -1,0 +1,109 @@
+{
+    "to": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+    "from": "0x7CbBba14C573fA52Aadad44C7aE8085dC0764ebd",
+    "contractAddress": null,
+    "transactionIndex": 97,
+    "gasUsed": {
+        "type": "BigNumber",
+        "hex": "0x028efb"
+    },
+    "logsBloom": "0x00200000000000000000000080000000000000000000000000010000010200000008000000000000000000000008000002000000080000000000000000200000000000000000000000000008000000200000000000400000000800000000000000000000000000000000000000000000000000000000040000000010000000100000000000000000004000000000000000000000000000080000004000000000020000000000000000000020008000000000000000000001000200000000000000000002000040000000000000000000000000000000001000000002000020000010200000000000008000000000000000000000000000000000000000000000",
+    "blockHash": "0xd17bf8d076e0bccbd1f5f567b580ecae18d414626c1413358db6d503ca0ce868",
+    "transactionHash": "0x03ab0bf5dcae6a35f96b502d51cd42be7dc3880a9d19e51fea7f08a06946f4f5",
+    "logs": [
+        {
+            "transactionIndex": 97,
+            "blockNumber": 13764664,
+            "transactionHash": "0x03ab0bf5dcae6a35f96b502d51cd42be7dc3880a9d19e51fea7f08a06946f4f5",
+            "address": "0x494Cd82786a86eA842f8D80545Ff841Bcbf42dED", //Address of interacted contract
+            "topics": [
+                "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", //Keccak hash of transfer signature
+                "0x0000000000000000000000007cbbba14c573fa52aadad44c7ae8085dc0764ebd", //From
+                "0x000000000000000000000000471de74ecf3f5837c119cb4e2607dadd3e72a49d" //To
+            ],
+            "data": "0x000000000000000000000000000000000000000000000000369781b18c93d2f2", //Amount sent - MGC in this case 
+            "logIndex": 102,
+            "blockHash": "0xd17bf8d076e0bccbd1f5f567b580ecae18d414626c1413358db6d503ca0ce868"
+        },
+        {
+            "transactionIndex": 97,
+            "blockNumber": 13764664,
+            "transactionHash": "0x03ab0bf5dcae6a35f96b502d51cd42be7dc3880a9d19e51fea7f08a06946f4f5",
+            "address": "0x494Cd82786a86eA842f8D80545Ff841Bcbf42dED",
+            "topics": [
+                "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925",
+                "0x0000000000000000000000007cbbba14c573fa52aadad44c7ae8085dc0764ebd",
+                "0x0000000000000000000000007a250d5630b4cf539739df2c5dacb4c659f2488d"
+            ],
+            "data": "0xffffffffffffffffffffffffffffffffffffffffffffffffbfc63a3e2d703501",
+            "logIndex": 103,
+            "blockHash": "0xd17bf8d076e0bccbd1f5f567b580ecae18d414626c1413358db6d503ca0ce868"
+        },
+        {
+            "transactionIndex": 97,
+            "blockNumber": 13764664,
+            "transactionHash": "0x03ab0bf5dcae6a35f96b502d51cd42be7dc3880a9d19e51fea7f08a06946f4f5",
+            "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "topics": [
+                "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+                "0x000000000000000000000000471de74ecf3f5837c119cb4e2607dadd3e72a49d", //From
+                "0x0000000000000000000000007a250d5630b4cf539739df2c5dacb4c659f2488d" //To 
+            ],
+            "data": "0x00000000000000000000000000000000000000000000000017ca1f2afb3773ff", //Amount received in eth
+            "logIndex": 104,
+            "blockHash": "0xd17bf8d076e0bccbd1f5f567b580ecae18d414626c1413358db6d503ca0ce868"
+        },
+        {
+            "transactionIndex": 97,
+            "blockNumber": 13764664,
+            "transactionHash": "0x03ab0bf5dcae6a35f96b502d51cd42be7dc3880a9d19e51fea7f08a06946f4f5",
+            "address": "0x471de74ecf3F5837C119cB4E2607daDD3e72a49d",
+            "topics": [
+                "0x1c411e9a96e071241c2f21f7726b17ae89e3cab4c78be50e062b03a9fffbbad1"
+            ],
+            "data": "0x000000000000000000000000000000000000000000000007ff774c29298fbdb70000000000000000000000000000000000000000000000035f59b31b098fa003",
+            "logIndex": 105,
+            "blockHash": "0xd17bf8d076e0bccbd1f5f567b580ecae18d414626c1413358db6d503ca0ce868"
+        },
+        {
+            "transactionIndex": 97,
+            "blockNumber": 13764664,
+            "transactionHash": "0x03ab0bf5dcae6a35f96b502d51cd42be7dc3880a9d19e51fea7f08a06946f4f5",
+            "address": "0x471de74ecf3F5837C119cB4E2607daDD3e72a49d",
+            "topics": [
+                "0xd78ad95fa46c994b6551d0da85fc275fe613ce37657fb8d5e3d130840159d822",
+                "0x0000000000000000000000007a250d5630b4cf539739df2c5dacb4c659f2488d",
+                "0x0000000000000000000000007a250d5630b4cf539739df2c5dacb4c659f2488d"
+            ],
+            "data": "0x0000000000000000000000000000000000000000000000003710cb39c9b172100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000017ca1f2afb3773ff",
+            "logIndex": 106,
+            "blockHash": "0xd17bf8d076e0bccbd1f5f567b580ecae18d414626c1413358db6d503ca0ce868"
+        },
+        {
+            "transactionIndex": 97,
+            "blockNumber": 13764664,
+            "transactionHash": "0x03ab0bf5dcae6a35f96b502d51cd42be7dc3880a9d19e51fea7f08a06946f4f5",
+            "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "topics": [
+                "0x7fcf532c15f0a6db0bd6d0e038bea71d30d808c7d98cb3bf7268a95bf5081b65",
+                "0x0000000000000000000000007a250d5630b4cf539739df2c5dacb4c659f2488d"
+            ],
+            "data": "0x00000000000000000000000000000000000000000000000017ca1f2afb3773ff",
+            "logIndex": 107,
+            "blockHash": "0xd17bf8d076e0bccbd1f5f567b580ecae18d414626c1413358db6d503ca0ce868"
+        }
+    ],
+    "blockNumber": 13764664,
+    "confirmations": 1864,
+    "cumulativeGasUsed": {
+        "type": "BigNumber",
+        "hex": "0x51df0f"
+    },
+    "effectiveGasPrice": {
+        "type": "BigNumber",
+        "hex": "0x12a05f2000"
+    },
+    "status": 1,
+    "type": 0,
+    "byzantium": true
+}

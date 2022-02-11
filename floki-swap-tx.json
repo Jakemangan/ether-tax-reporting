@@ -1,0 +1,56 @@
+{
+    "to": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D", //IN
+    "from": "0x7CbBba14C573fA52Aadad44C7aE8085dC0764ebd",
+    "contractAddress": null,
+    "transactionIndex": 14,
+    "gasUsed": {
+        "type": "BigNumber",
+        "hex": "0x0261ac"
+    },
+    "logsBloom": "0x00200000000000000000000080000000000000000000000000010000010200000000000000000000000000000008000002000000080000000000200000000000000000000000000000000008000000600000000000000000000000008008000000000000000000000000000000000040000000000000000000000010000000000000000000000000004000000000000000000001000000880000004000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000000000404000000000000001000000000000020000000200000000000000001200000000000000000000000400000000000000000",
+    "blockHash": "0xf81ed64a92bbaeac111afe4d77346e47daca11c7baee3af8d4e42f36a6ba7ae4",
+    "transactionHash": "0x9b64134984bf22c87bc7ad7a66a66d1a368e368c0587ddcebf74c8a2e66cd74d",
+    "logs": [
+        {
+            "transactionIndex": 14,
+            "blockNumber": 12741073,
+            "transactionHash": "0x9b64134984bf22c87bc7ad7a66a66d1a368e368c0587ddcebf74c8a2e66cd74d",
+            "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", //WETH
+            "topics": [
+                "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", //Transfer
+                "0x0000000000000000000000007a250d5630b4cf539739df2c5dacb4c659f2488d", //Uniswap v2 router
+                "0x00000000000000000000000030ac70e2dc5092f64031685bb23d50f782c27566" //Eth-Floki pairing on uni
+            ],
+            "data": "0x00000000000000000000000000000000000000000000000007c5850872380000", //Transfer 0.56 WETH to FLOKI
+            "logIndex": 22,
+            "blockHash": "0xf81ed64a92bbaeac111afe4d77346e47daca11c7baee3af8d4e42f36a6ba7ae4"
+        },
+        {
+            "transactionIndex": 14,
+            "blockNumber": 12741073,
+            "transactionHash": "0x9b64134984bf22c87bc7ad7a66a66d1a368e368c0587ddcebf74c8a2e66cd74d",
+            "address": "0xb1F4b66104353eC63D8d59D3da42C0b4Fb06E7f3", //FLOKI
+            "topics": [
+                "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", //Transfer
+                "0x00000000000000000000000030ac70e2dc5092f64031685bb23d50f782c27566", //Eth-Floki pairing on uni
+                "0x0000000000000000000000007cbbba14c573fa52aadad44c7ae8085dc0764ebd" //Me
+            ],
+            "data": "0x000000000000000000000000000000000000000000000000014440a24cc81735", //Amount of FLOKI transferred to me
+            "logIndex": 23,
+            "blockHash": "0xf81ed64a92bbaeac111afe4d77346e47daca11c7baee3af8d4e42f36a6ba7ae4"
+        }
+    ],
+    "blockNumber": 12741073,
+    "confirmations": 1367207,
+    "cumulativeGasUsed": {
+        "type": "BigNumber",
+        "hex": "0x0ee868"
+    },
+    "effectiveGasPrice": {
+        "type": "BigNumber",
+        "hex": "0x0430e23400"
+    },
+    "status": 1,
+    "type": 0,
+    "byzantium": true
+}
