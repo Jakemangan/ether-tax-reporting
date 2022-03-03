@@ -1,0 +1,84 @@
+{
+    "to": "0x8d8c4B0f4EF116F6E9DE1Fd7d3b51B71785c4eE3", //IN (BUY)
+    "from": "0x7CbBba14C573fA52Aadad44C7aE8085dC0764ebd",
+    "contractAddress": null,
+    "transactionIndex": 2,
+    "gasUsed": {
+        "type": "BigNumber",
+        "hex": "0x05e2e4"
+    },
+    "logsBloom": "0x00220000000000000000000080040000000000000000000000010200010200000000000000000000000000000008000002000080080000408000010000200000000000000000000000000008000000200000000000400000000000000000000000000000200000000000000000000000000000000000040000000010400000000000000000000000004000000000000000000000000000080100004000000000020000000000000000000000000000000040000000000000000000000000000000000202000000000000002000000000000000004000001000000002000020000012200000000004040000000000000000000000000000000000000000000400",
+    "blockHash": "0x2ef46a9889cce9423b9dc6ec02664f9d9144bc5f916493f83801a809365b10ac",
+    "transactionHash": "0x345689833c0a820d6d462ed9f2859485dd7b4b3fede53b4bf1183b719fb7f7e6",
+    "logs": [
+        {
+            "transactionIndex": 2,
+            "blockNumber": 13797690,
+            "transactionHash": "0x345689833c0a820d6d462ed9f2859485dd7b4b3fede53b4bf1183b719fb7f7e6",
+            "address": "0xC146B7CdBaff065090077151d391f4c96Aa09e0C", //MCC v2
+            "topics": [
+                "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", //Transfer
+                "0x0000000000000000000000008d8c4b0f4ef116f6e9de1fd7d3b51b71785c4ee3", // MCCSwap
+                "0x0000000000000000000000007cbbba14c573fa52aadad44c7ae8085dc0764ebd" //Me
+            ],
+            "data": "0x00000000000000000000000000000000000000000000000011f5c4693734cb39",
+            "logIndex": 12,
+            "blockHash": "0x2ef46a9889cce9423b9dc6ec02664f9d9144bc5f916493f83801a809365b10ac"
+        },
+        {
+            "transactionIndex": 2,
+            "blockNumber": 13797690,
+            "transactionHash": "0x345689833c0a820d6d462ed9f2859485dd7b4b3fede53b4bf1183b719fb7f7e6",
+            "address": "0x1454232149A0dC51e612b471fE6d3393e60D09Ad", //MCC v1
+            "topics": [
+                "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", //Transfer
+                "0x0000000000000000000000001454232149a0dc51e612b471fe6d3393e60d09ad", //MCC
+                "0x000000000000000000000000e9672a2094544d4d701066d57ff5a64078a4bcd8" //UNI v2
+            ],
+            "data": "0x00000000000000000000000000000000000000000000000000166a25c013f86f",
+            "logIndex": 14,
+            "blockHash": "0x2ef46a9889cce9423b9dc6ec02664f9d9144bc5f916493f83801a809365b10ac"
+        },
+        {
+            "transactionIndex": 2,
+            "blockNumber": 13797690,
+            "transactionHash": "0x345689833c0a820d6d462ed9f2859485dd7b4b3fede53b4bf1183b719fb7f7e6",
+            "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", //WETH
+            "topics": [
+                "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", //Transfer
+                "0x000000000000000000000000e9672a2094544d4d701066d57ff5a64078a4bcd8", //Uni v2
+                "0x0000000000000000000000007a250d5630b4cf539739df2c5dacb4c659f2488d" //Uni v2 router
+            ],
+            "data": "0x0000000000000000000000000000000000000000000000000012f74d27df6743",
+            "logIndex": 16,
+            "blockHash": "0x2ef46a9889cce9423b9dc6ec02664f9d9144bc5f916493f83801a809365b10ac"
+        },
+        {
+            "transactionIndex": 2,
+            "blockNumber": 13797690,
+            "transactionHash": "0x345689833c0a820d6d462ed9f2859485dd7b4b3fede53b4bf1183b719fb7f7e6",
+            "address": "0x1454232149A0dC51e612b471fE6d3393e60D09Ad", //MCC v1
+            "topics": [
+                "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", //Transfer
+                "0x0000000000000000000000007cbbba14c573fa52aadad44c7ae8085dc0764ebd", //Me
+                "0x0000000000000000000000008d8c4b0f4ef116f6e9de1fd7d3b51b71785c4ee3" //MCC Swap
+            ],
+            "data": "0x000000000000000000000000000000000000000000000000000f99f0910b296d",
+            "logIndex": 20,
+            "blockHash": "0x2ef46a9889cce9423b9dc6ec02664f9d9144bc5f916493f83801a809365b10ac"
+        }
+    ],
+    "blockNumber": 13797690,
+    "confirmations": 310963,
+    "cumulativeGasUsed": {
+        "type": "BigNumber",
+        "hex": "0x0ad57e"
+    },
+    "effectiveGasPrice": {
+        "type": "BigNumber",
+        "hex": "0x2794ca2400"
+    },
+    "status": 1,
+    "type": 0,
+    "byzantium": true
+}

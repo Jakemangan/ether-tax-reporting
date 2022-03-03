@@ -1,0 +1,58 @@
+[
+    {
+        "txHash": "0x24cf38b4dc45b0c006b7fe467e029ea48ff1a14cc4f753209967a2970f00aaaf",
+        "errorReason": "TX has a high number of log events, likely a migration transaction or similar. Skipping."
+    },
+    {
+        "txHash": "0x24cf38b4dc45b0c006b7fe467e029ea48ff1a14cc4f753209967a2970f00aaaf",
+        "errorReason": "TX has a high number of log events, likely a migration transaction or similar. Skipping."
+    },
+    {
+        "txHash": "0x24cf38b4dc45b0c006b7fe467e029ea48ff1a14cc4f753209967a2970f00aaaf",
+        "errorReason": "TX has a high number of log events, likely a migration transaction or similar. Skipping."
+    },
+    {
+        "txHash": "0x3b329b170408b560bef51da6f2611ec15c2e04c054efccc549ad4fb881af4ad8",
+        "errorReason": "TX has a high number of log events, likely a migration transaction or similar. Skipping."
+    },
+    {
+        "txHash": "0x3b329b170408b560bef51da6f2611ec15c2e04c054efccc549ad4fb881af4ad8",
+        "errorReason": "TX has a high number of log events, likely a migration transaction or similar. Skipping."
+    },
+    {
+        "txHash": "0xaf45418d0fbe37c92ad22334b1afc2c22fa9b04376e9a9ecd74c5241c63683bf",
+        "errorReason": "TX has a high number of log events, likely a migration transaction or similar. Skipping."
+    },
+    {
+        "txHash": "0xc18b276005c7cd1a3e50505a94543dd656b81433787566756be894cdffec372b",
+        "errorReason": "Unable to find token details for contract address, cannot process tx - 0xc18b276005c7cd1a3e50505a94543dd656b81433787566756be894cdffec372b"
+    },
+    {
+        "txHash": "0xffa7ebacc852a5f8954e912dd577743e18206f8e81c1a83df64da7b1fe7276c5",
+        "errorReason": "TX has a high number of log events, likely a migration transaction or similar. Skipping."
+    },
+    {
+        "txHash": "0xf05a2d7dee2bef0cbc22b3baaf4e0c49f7fcd800df14b7a00c760a8f40f2b4b5",
+        "errorReason": "TX has a high number of log events, likely a migration transaction or similar. Skipping."
+    },
+    {
+        "txHash": "0x6e17c69d6f90dc1a01b514805f43ada1d3b9021ae9ecb68c4384563d5546196a",
+        "errorReason": "TX has a high number of log events, likely a migration transaction or similar. Skipping."
+    },
+    {
+        "txHash": "0x74c1462d077d6fe5e86ba011f94670273c151c95b7603eb85896d04ae37c2052",
+        "errorReason": "TX has a high number of log events, likely a migration transaction or similar. Skipping."
+    },
+    {
+        "txHash": "0x534ef777d136e76ddd4b360fb21e4e7ddd48920eac9141253e25502be51ed216",
+        "errorReason": "TX has a high number of log events, likely a migration transaction or similar. Skipping."
+    },
+    {
+        "txHash": "0x9389920ebab569ccf79ad965399d5cf38b15f2dc3a5660e8658131479cb01fcc",
+        "errorReason": "TX has a high number of log events, likely a migration transaction or similar. Skipping."
+    },
+    {
+        "txHash": "0x39743e06cbae271dce2b9c46ec0c520c4a59949b45268caf6c591ecc1fdbecdd",
+        "errorReason": "TX has a high number of log events, likely a migration transaction or similar. Skipping."
+    }
+]

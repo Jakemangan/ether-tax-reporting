@@ -1,0 +1,84 @@
+{
+    "to": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D", //OUT
+    "from": "0x7CbBba14C573fA52Aadad44C7aE8085dC0764ebd",
+    "contractAddress": null,
+    "transactionIndex": 28,
+    "gasUsed": {
+        "type": "BigNumber",
+        "hex": "0x03ea84"
+    },
+    "logsBloom": "0x00200000000000200000000080000000000000200000000000010000010200000000000000000000000000000008000002000000080000000000000001200000000010000000000000000008000002200000000000408000000000000000000000008000000000000000000000000000008000000000040000000010000000000000000000060000004000000000000000000000000000080000004000000000020000000000000000000000000000000000000000000000000000000000000000000002000001000000000000000000000000000000201000000002000020000010200000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x17955f60353c2b1242bd01668539f079ae614377e85aa2e1f89ebedae69eadcd",
+    "transactionHash": "0x35c9bce1523aa5ad62b5121196087100aea27e7a895293119fc1c8af7ebca5e5",
+    "logs": [
+        {
+            "transactionIndex": 28,
+            "blockNumber": 13556554,
+            "transactionHash": "0x35c9bce1523aa5ad62b5121196087100aea27e7a895293119fc1c8af7ebca5e5",
+            "address": "0x4B2C54b80B77580dc02A0f6734d3BAD733F50900", //KIBA
+            "topics": [
+                "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", //Transfer
+                "0x0000000000000000000000004b2c54b80b77580dc02a0f6734d3bad733f50900", //KIBA
+                "0x000000000000000000000000ac6776d1c8d455ad282c76eb4c2ade2b07170104" //Uniswap KIBA
+            ],
+            "data": "0x00000000000000000000000000000000000000000000000000e201a9b841f63d", //63M
+            "logIndex": 45,
+            "blockHash": "0x17955f60353c2b1242bd01668539f079ae614377e85aa2e1f89ebedae69eadcd"
+        },
+        {
+            "transactionIndex": 28,
+            "blockNumber": 13556554,
+            "transactionHash": "0x35c9bce1523aa5ad62b5121196087100aea27e7a895293119fc1c8af7ebca5e5",
+            "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", //WETH
+            "topics": [
+                "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", //Transfer
+                "0x000000000000000000000000ac6776d1c8d455ad282c76eb4c2ade2b07170104",  //Uniswap KIBA
+                "0x0000000000000000000000007a250d5630b4cf539739df2c5dacb4c659f2488d" //Uniswap v2 router - Adding liquidity to uni pool?
+            ],
+            "data": "0x00000000000000000000000000000000000000000000000002dbfdadae6dc6bd", //WEth 0.206
+            "logIndex": 47,
+            "blockHash": "0x17955f60353c2b1242bd01668539f079ae614377e85aa2e1f89ebedae69eadcd"
+        },
+        {
+            "transactionIndex": 28,
+            "blockNumber": 13556554,
+            "transactionHash": "0x35c9bce1523aa5ad62b5121196087100aea27e7a895293119fc1c8af7ebca5e5",
+            "address": "0x4B2C54b80B77580dc02A0f6734d3BAD733F50900", //KIBA
+            "topics": [
+                "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", //Transfer
+                "0x0000000000000000000000007cbbba14c573fa52aadad44c7ae8085dc0764ebd", //Me
+                "0x000000000000000000000000ac6776d1c8d455ad282c76eb4c2ade2b07170104" //Uniswap KIBA
+            ],
+            "data": "0x0000000000000000000000000000000000000000000000001315e11de8f18c80", //Kiba sold amount 1,375M
+            "logIndex": 51,
+            "blockHash": "0x17955f60353c2b1242bd01668539f079ae614377e85aa2e1f89ebedae69eadcd"
+        },
+        {
+            "transactionIndex": 28,
+            "blockNumber": 13556554,
+            "transactionHash": "0x35c9bce1523aa5ad62b5121196087100aea27e7a895293119fc1c8af7ebca5e5",
+            "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", //WETH
+            "topics": [
+                "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef", //Transfer
+                "0x000000000000000000000000ac6776d1c8d455ad282c76eb4c2ade2b07170104", //Uniswap KIBA
+                "0x0000000000000000000000007a250d5630b4cf539739df2c5dacb4c659f2488d" //Uniswap v2 router
+            ],
+            "data": "0x0000000000000000000000000000000000000000000000003bde7e7e407ae101", //4.314024573780287745 WETH
+            "logIndex": 53,
+            "blockHash": "0x17955f60353c2b1242bd01668539f079ae614377e85aa2e1f89ebedae69eadcd"
+        }
+    ],
+    "blockNumber": 13556554,
+    "confirmations": 553070,
+    "cumulativeGasUsed": {
+        "type": "BigNumber",
+        "hex": "0x1bad4e"
+    },
+    "effectiveGasPrice": {
+        "type": "BigNumber",
+        "hex": "0x20a60e1322"
+    },
+    "status": 1,
+    "type": 0,
+    "byzantium": true
+}
