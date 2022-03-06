@@ -43,8 +43,6 @@ export class EthereumWalletTrackingManager implements OnApplicationBootstrap {
             return;
         }
 
-        console.log(this.gateway.server);
-
         let transactionsForWallet = await this.etherscanService.getTransactionsForAddress(walletAddress, true);
         transactionsForWallet = transactionsForWallet.sort((a, b) => parseInt(b.timeStamp) - parseInt(a.timeStamp));
 
@@ -68,7 +66,8 @@ export class EthereumWalletTrackingManager implements OnApplicationBootstrap {
             }
         }
 
-        processTxResults.forEach((x) => console.log(this.ethTxProcessor.getPrintStringFromTransactionResult(x)));
+        let printStrings = processTxResults.map((x) => this.ethTxProcessor.getPrintStringFromTransactionResult(x));
+        this.gateway.server.emit('outStrings', printStrings);
 
         for (const res of processTxResults) {
             await this.dbRepo.insertTxReport(res, walletAddress);
