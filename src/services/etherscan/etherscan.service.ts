@@ -8,9 +8,14 @@ export class EtherscanService {
 
     constructor() {}
 
-    async getTransactionsForAddress(walletAddress: string): Promise<EtherscanTransaction[]> {
+    async getTransactionsForAddress(walletAddress: string, isTest: boolean): Promise<EtherscanTransaction[]> {
+        // if(isTest){
+        //     return randomTestTx();
+        // }
         let url = `https://api.etherscan.io/api?module=account&action=tokentx&address=${walletAddress}&page=1&offset=100&sort=desc&apikey=J2GAJVC7JJ4NZ331JCF41BPCCIFA73CHDU`;
         let res = (await axios.default.get(url)).data;
         return res.result;
     }
+
+    private randomTestTx() {}
 }

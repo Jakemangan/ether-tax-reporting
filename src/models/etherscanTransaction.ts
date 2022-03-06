@@ -5,7 +5,7 @@ export interface EtherscanTransaction {
     nonce: string;
     blockHash: string;
     from: string;
-    contractAddres: string;
+    contractAddress: string;
     to: string;
     value: string;
     tokenName: string;

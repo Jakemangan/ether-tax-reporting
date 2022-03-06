@@ -2,12 +2,13 @@ import { Injectable } from '@nestjs/common';
 import cheerio from 'cheerio';
 import { AnyTxtRecord } from 'dns';
 import fetch from 'node-fetch';
+import { TokenDetails } from 'src/models/tokenDetails';
 
 @Injectable()
 export class WebScrapingService {
     private readonly webScrapingApiKey = 'jDF7HWvVdVhBHJY14OC1bN3UZVueLinw';
 
-    public async scrapeAllTransactionHashesFromWalletAddress(walletAddress: string): Promise<string[]> {
+    public async getAllTransactionHashesForWalletAddress(walletAddress: string): Promise<string[]> {
         try {
             let totalTxCount = await this.scrapeTxCount(walletAddress);
             if (!totalTxCount) {
@@ -27,9 +28,48 @@ export class WebScrapingService {
         return null;
     }
 
+    public async getTokenDetails(contractAddress: string): Promise<TokenDetails> {
+        try {
+            let tokenDetails = await this.scrapeTokenDetailsFromWebpage(contractAddress);
+            if (tokenDetails) {
+                tokenDetails.contractAddress = contractAddress;
+                return tokenDetails;
+            } else {
+                throw new Error('Could not scrape site for token details.');
+            }
+        } catch (error) {
+            console.error('Could not scrape site for token details - ' + error);
+        }
+        return null;
+    }
+
+    /*
+     * Private methods
+     */
+
+    //This and the below method can be refactored into one
+    private async scrapeTokenDetailsFromWebpage(contractAddress: string) {
+        let urlToCall = this.tokenDetailsUrlBuilder(contractAddress);
+        let pageHtmlOk = false;
+        let pageHtml: string;
+        while (!pageHtmlOk) {
+            pageHtml = await (await fetch(urlToCall)).text();
+            if (pageHtml.includes('The website responded with status code 403')) {
+                console.log('Bad scrape. Retrying.');
+                // console.log(pageHtml);
+                continue;
+            } else {
+                pageHtmlOk = true;
+            }
+        }
+        if (pageHtml) {
+            return this.getTokenDetailsFromHtml(pageHtml);
+        }
+    }
+
     private async scrapeTxCount(walletAddress: string): Promise<number> {
         console.log('Getting total TX count.');
-        let urlToCall = this.apiUrlBuilder(walletAddress);
+        let urlToCall = this.walletTransactionUrlBuilder(walletAddress);
 
         try {
             let pageHtmlOk = false;
@@ -58,7 +98,7 @@ export class WebScrapingService {
         let txHashesForWallet: string[] = [];
 
         while (txHashesForWallet.length < totalTxCount) {
-            let pageUrl = this.apiUrlBuilder(walletAddress, pageIndex);
+            let pageUrl = this.walletTransactionUrlBuilder(walletAddress, pageIndex);
             let pageHtml = await (await fetch(pageUrl)).text();
             if (pageHtml.includes('Cloudflare') && pageHtml.includes('The website responded with status code 403')) {
                 console.log('Bad scrape. Retrying.');
@@ -72,10 +112,9 @@ export class WebScrapingService {
                 );
 
                 /*
-        The resulting object parsed from the HTML should be an array of at least 25 HTML nodes (each node being 
-        a row in the table), if not something has gone wrong with the scraper and we should retry the url
-        */
-                let isArray = Array.isArray(allTableRows);
+                The resulting object parsed from the HTML should be an array of at least 25 HTML nodes (each node being 
+                a row in the table), if not something has gone wrong with the scraper and we should retry the url
+                */
                 if (allTableRows.length >= 25) {
                     let length = allTableRows.length;
                     for (let i = 0; i < length; i++) {
@@ -105,7 +144,30 @@ export class WebScrapingService {
         return parseInt(totalTxElementText);
     }
 
-    private apiUrlBuilder(walletAddress: string, pageNumber: number = null) {
+    private getTokenDetailsFromHtml(pageHtml: string): TokenDetails {
+        const $ = cheerio.load(pageHtml);
+
+        let tokenName = $('#content > div.container.py-3 > div > div.mb-3.mb-lg-0 > h1 > div > span').text().trim();
+        let tokenDecimals = $('#ContentPlaceHolder1_trDecimals > div > div.col-md-8')
+            .text()
+            .replace(/[^0-9]/g, '')
+            .trim();
+        let tokenSymbol = $(
+            '#ContentPlaceHolder1_divSummary > div.row.mb-4 > div.col-md-6.mb-3.mb-md-0 > div > div.card-body > div.row.align-items-center > div.col-md-8.font-weight-medium',
+        )
+            .text()
+            .replace(/[^a-zA-Z]/g, '')
+            .trim();
+
+        return {
+            contractAddress: '',
+            decimals: parseInt(tokenDecimals),
+            name: tokenName,
+            symbol: tokenSymbol,
+        };
+    }
+
+    private walletTransactionUrlBuilder(walletAddress: string, pageNumber: number = null) {
         let etherScanUrl;
         if (pageNumber) {
             etherScanUrl = `https://etherscan.io/tokentxns?a=${walletAddress}&p=${pageNumber}`;
@@ -119,6 +181,13 @@ export class WebScrapingService {
         // let url = `https://api.webscrapingapi.com/v1?api_key=${this.webScrapingApiKey}&url=${encodedTargetURI}&device=desktop&proxy_type=datacenter&render_js=1&wait_until=domcontentloaded&keep_headers=1&wait_for=10000`;
 
         let url = `https://app.scrapingbee.com/api/v1/?api_key=6TL8H95UWQZ4OKFPKRUCO894OVZ3FOJ3ZPU6WMQRJAQVNHSM5NKD9DELDAF43KU75Z58NFFEH6DHBM6B&url=${encodedTargetURI}&wait=10000`;
+        return url;
+    }
+
+    private tokenDetailsUrlBuilder(contractAddress) {
+        let etherscanUrl = 'https://etherscan.io/token/' + contractAddress;
+        let encodedTargetURI = encodeURIComponent(etherscanUrl);
+        let url = `https://app.scrapingbee.com/api/v1/?api_key=6TL8H95UWQZ4OKFPKRUCO894OVZ3FOJ3ZPU6WMQRJAQVNHSM5NKD9DELDAF43KU75Z58NFFEH6DHBM6B&url=${encodedTargetURI}&wait=3000`;
         return url;
     }
 

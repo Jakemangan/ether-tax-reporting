@@ -3,10 +3,11 @@ export interface EthereumTxProcessResult {
     timestamp: number;
     nearest5minTimestamp: number;
     numberOfLogEvents: number;
-    type: string;
+    type: number;
     wethAmountDecimal: number;
     tokenAmountDecimal: number;
     tokenName: string;
+    tokenContractAddress: string;
     processResult: EthereumTxProcessResultType;
 }
 

@@ -5,10 +5,10 @@ import {
     EthereumTxProcessResult,
     EthereumTxProcessResultType,
 } from 'src/models/ethereumTxProcessResult';
-import { DatabaseRepo } from 'src/services/db-repo/db.repo';
+import { DatabaseRepo } from 'src/services/database/db-repo/db.repo';
+import { EthereumNodeService } from 'src/services/ethereum/ethereum-node/ethereum-node.service';
+import { EthereumTxProcessorService } from 'src/services/ethereum/ethereum-tx-processor/ethereum-tx-processor.service';
 import { WebScrapingService } from 'src/services/web-scraping/web-scraping.service';
-import { EthereumNodeService } from '../../ethereum/ethereum-node/ethereum-node.service';
-import { EthereumTxProcessorService } from '../../ethereum/ethereum-tx-processor/ethereum-tx-processor.service';
 
 @Injectable()
 export class EthereumTranasctionProcessManager implements OnApplicationBootstrap {
@@ -66,20 +66,7 @@ export class EthereumTranasctionProcessManager implements OnApplicationBootstrap
         // console.log(erroredResults);
         // console.log(JSON.stringify(erroredResults));
 
-        processResults.forEach((res) => {
-            let outStr;
-            if (res.processResult === EthereumTxProcessResultType.simpleTransfer) {
-                console.log('Simple transfer.');
-                return;
-            }
-            if (res.type === 'BUY') {
-                outStr = `${res.type} - Bought ${res.tokenAmountDecimal} ${res.tokenName} for ${res.wethAmountDecimal} WETH.`;
-            } else {
-                outStr = `${res.type} - Sold ${res.tokenAmountDecimal} ${res.tokenName} for ${res.wethAmountDecimal} WETH.`;
-            }
-            // console.log(outStr);
-            console.log(outStr);
-        });
+        processResults.forEach((x) => console.log(this.ethTxProcessor.getPrintStringFromTransactionResult(x)));
 
         console.log('Finished.');
     }

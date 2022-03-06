@@ -1,5 +1,6 @@
 export interface InfluencerTx {
     txHash: string;
-    influencerId: string;
+    walletAddress: string;
     timestamp: number;
+    txToAddress: string;
 }

@@ -3,13 +3,22 @@ import { last } from 'cheerio/lib/api/traversing';
 import { EthereumTxProcessResult, EthereumTxProcessResultType } from 'src/models/ethereumTxProcessResult';
 import { ProcessTxErrors } from 'src/models/ProcessTxErrors';
 import { RelevantTransferEvents } from 'src/models/relevantTransferEvents';
+import { TokenDetails } from 'src/models/tokenDetails';
+import { DatabaseRepo } from 'src/services/database/db-repo/db.repo';
+import { WebScrapingService } from 'src/services/web-scraping/web-scraping.service';
 import { EthereumNodeService } from '../ethereum-node/ethereum-node.service';
 import tokenDetails from './tokenDetails';
 import weth from './wethDetails';
 
 @Injectable()
 export class EthereumTxProcessorService {
-    constructor(private ethNodeService: EthereumNodeService) {}
+    private readonly NULL_ADDRESS: string = '0x0000000000000000000000000000000000000000000000000000000000000000';
+
+    constructor(
+        private ethNodeService: EthereumNodeService,
+        private dbRepo: DatabaseRepo,
+        private webScrapingService: WebScrapingService,
+    ) {}
 
     public async processTxHash(txHash, walletAddress): Promise<EthereumTxProcessResult> {
         const walletNonHex = this.getWalletNonHex(walletAddress);
@@ -27,7 +36,7 @@ export class EthereumTxProcessorService {
         // this.printDetails([txDetails.txReceipt]);
         let relevantEvents: RelevantTransferEvents;
         try {
-            relevantEvents = this.getRelevantTransferLogs(transferEvents, swapEvents, walletNonHex);
+            relevantEvents = await this.getRelevantTransferLogs(transferEvents, swapEvents, walletNonHex);
         } catch (error) {
             switch (error.message) {
                 case ProcessTxErrors.OneTransferEvent.toString():
@@ -39,10 +48,11 @@ export class EthereumTxProcessorService {
                         timestamp: txDetails.timestamp,
                         numberOfLogEvents: numLogEvents,
                         nearest5minTimestamp: this.getNearest5minTimestamp(txDetails.timestamp),
+                        type: 3,
                         tokenAmountDecimal: 0,
                         wethAmountDecimal: 0,
                         tokenName: 'N/A',
-                        type: 'N/A',
+                        tokenContractAddress: '',
                         processResult: EthereumTxProcessResultType.simpleTransfer,
                     };
                 case ProcessTxErrors.MoreThanOneWethEvent.toString():
@@ -59,7 +69,7 @@ export class EthereumTxProcessorService {
         }
 
         let tokenContractAddress = relevantEvents.tokenEvent.address;
-        let tokenUsedDetails = this.getTokenDetails(tokenContractAddress);
+        let tokenUsedDetails = await this.getTokenDetails(tokenContractAddress); //Get rid of this second unneeded call
 
         if (!tokenUsedDetails) {
             console.error('Unable to find token details for contract address -' + tokenContractAddress);
@@ -85,6 +95,7 @@ export class EthereumTxProcessorService {
             tokenAmountDecimal: parseFloat(tokenAmountDecimal),
             wethAmountDecimal: parseFloat(wethAmountDecimal),
             tokenName: tokenUsedDetails.name,
+            tokenContractAddress: tokenUsedDetails.contractAddress,
             type: relevantEvents.type,
             processResult: EthereumTxProcessResultType.successful,
         };
@@ -102,11 +113,11 @@ export class EthereumTxProcessorService {
         input.forEach((x) => console.log(JSON.stringify(x), '\n'));
     }
 
-    private getRelevantTransferLogs(
+    private async getRelevantTransferLogs(
         transferEvents: any[],
         swapEvents: any[],
         walletNonHex: string,
-    ): RelevantTransferEvents {
+    ): Promise<RelevantTransferEvents> {
         /*
         If there's more than 2 transfer events, get the last two as these are the ones we care about
         */
@@ -137,6 +148,7 @@ export class EthereumTxProcessorService {
         let type;
 
         if (transferEvents.length === 1) {
+            //TODO :: Return properly here instead of throwing error. Determine contract address before returning.
             throw new Error(ProcessTxErrors.OneTransferEvent.toString());
         }
 
@@ -144,13 +156,14 @@ export class EthereumTxProcessorService {
         if (lastEvent.address === weth.contractAddress) {
             //TOKEN sold for WETH - WETH recieved by wallet
             let tokenTransferEvents = transferEvents.filter((x) => x.address !== weth.contractAddress); //Remove WETH events, as we are only concerned with TOKEN events
+            tokenTransferEvents = tokenTransferEvents.filter((x) => !x.topics.includes(this.NULL_ADDRESS)); //Remove any events concerned with the NULL (burn) address, as these are irrelevant
 
             let uniqueEventContractAddresses = [...new Set(tokenTransferEvents.map((x) => x.address))]; //Non duplicate set of all addresses should have exactly one element
 
             if (uniqueEventContractAddresses.length !== 1)
                 throw new Error(ProcessTxErrors.AllLogEventsDoNotHaveIdenticalContractAddress.toString());
 
-            let tokenDetails = this.getTokenDetails(uniqueEventContractAddresses[0]); //Get token details for contract address
+            let tokenDetails = await this.getTokenDetails(uniqueEventContractAddresses[0]); //Get token details for contract address
             if (!tokenDetails) {
                 console.error('Unable to find token details for contract address -' + uniqueEventContractAddresses[0]);
                 throw new Error(ProcessTxErrors.UnableToFindContractAddressForToken.toString());
@@ -166,7 +179,7 @@ export class EthereumTxProcessorService {
 
             tokenEvent = eventWithHighestDataValue;
             wethEvent = lastEvent; //Last event is WETH event
-            type = 'SELL';
+            type = 2; //SELL
         } else {
             //TOKEN bought with WETH - TOKEN received by wallet
             let allWethEvents = transferEvents.filter((x) => x.address === weth.contractAddress); //Should only be one WETH event in the logs
@@ -175,7 +188,7 @@ export class EthereumTxProcessorService {
 
             wethEvent = allWethEvents[0];
             tokenEvent = lastEvent; //Last event is TOKEN event
-            type = 'BUY';
+            type = 1; //BUY;
         }
 
         return {
@@ -218,7 +231,43 @@ export class EthereumTxProcessorService {
         // }
     }
 
-    getTokenDetails(contractAddress: string) {
-        return tokenDetails.find((token) => token.address.toUpperCase() === contractAddress.toUpperCase());
+    async getTokenDetails(contractAddress: string): Promise<TokenDetails> {
+        // return tokenDetails.find((token) => token.address.toUpperCase() === contractAddress.toUpperCase());
+        try {
+            let tokenDetails = await this.dbRepo.getTokenDetailsByContractAddress(contractAddress);
+            if (!tokenDetails) {
+                tokenDetails = await this.webScrapingService.getTokenDetails(contractAddress);
+                await this.dbRepo.insertTokenDetails(tokenDetails);
+                console.log('Token details scraped from web and added to DB.');
+            } else {
+                console.log('Token details found in DB.');
+            }
+            return tokenDetails;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    getPrintStringFromTransactionResult(input: EthereumTxProcessResult) {
+        let outStr;
+        if (input.processResult === EthereumTxProcessResultType.simpleTransfer) {
+            console.log('Simple transfer.');
+            return;
+        }
+
+        let typeString;
+        switch (input.type) {
+            case 1:
+                typeString = 'BUY';
+            case 2:
+                typeString = 'SELL';
+        }
+
+        if (input.type === 1) {
+            outStr = `${typeString} - Bought ${input.tokenAmountDecimal} ${input.tokenName} for ${input.wethAmountDecimal} WETH.`;
+        } else {
+            outStr = `${typeString} - Sold ${input.tokenAmountDecimal} ${input.tokenName} for ${input.wethAmountDecimal} WETH.`;
+        }
+        return outStr;
     }
 }
