@@ -79,11 +79,18 @@ export default class TxMultiSwapAnalyser implements IBaseAnalyser {
         }
 
         console.log('Reached end of traversal');
-        let lastSwapInChain = swapChain[swapChain.length - 1];
+        //Reverse swap chain
+        let temp = [];
+        let swapChainLength = swapChain.length;
+        for (let i = 0; i < swapChainLength; i++) {
+            temp.push(swapChain.pop());
+        }
+        swapChain = [].concat(temp);
+
         // if (lastSwapInChain.topics[2].includes(this.nonHex(this.walletAddress))) {
         //Exit point is provided wallet, build the swap chain details and return
         let intermediateSwaps: IntermediateSwap[] = [];
-        for (let i = swapChain.length - 1; i > 0; i--) {
+        for (let i = 0; i < swapChain.length; i++) {
             let intSwap = swapChain[i];
             let intermediateSwapData = this.getSwapDataElements(intSwap);
 
