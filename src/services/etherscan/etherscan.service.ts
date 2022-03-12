@@ -12,7 +12,7 @@ export class EtherscanService {
         // if(isTest){
         //     return randomTestTx();
         // }
-        let url = `https://api.etherscan.io/api?module=account&action=tokentx&address=${walletAddress}&page=1&offset=100&sort=desc&apikey=J2GAJVC7JJ4NZ331JCF41BPCCIFA73CHDU`;
+        let url = `https://api.etherscan.io/api?module=account&action=tokentx&address=${walletAddress}&sort=desc&apikey=J2GAJVC7JJ4NZ331JCF41BPCCIFA73CHDU`;
         let res = (await axios.default.get(url)).data;
         return res.result;
     }

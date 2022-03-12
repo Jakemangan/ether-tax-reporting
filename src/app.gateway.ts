@@ -16,7 +16,7 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
         // throw new Error('Method not implemented.');
     }
     handleConnection(client: any, ...args: any[]) {
-        // throw new Error('Method not implemented.');
+        console.log('New client connected.');
     }
     afterInit(server: any) {
         // throw new Error('Method not implemented.');

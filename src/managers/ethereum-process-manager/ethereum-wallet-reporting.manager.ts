@@ -8,16 +8,19 @@ import {
 import { DatabaseRepo } from 'src/services/database/db-repo/db.repo';
 import { EthereumNodeService } from 'src/services/ethereum/ethereum-node/ethereum-node.service';
 import { EthereumTxProcessorService } from 'src/services/ethereum/ethereum-tx-processor/ethereum-tx-processor.service';
+import { EtherscanService } from 'src/services/etherscan/etherscan.service';
 import { WebScrapingService } from 'src/services/web-scraping/web-scraping.service';
 
 @Injectable()
 export class EthereumTranasctionProcessManager implements OnApplicationBootstrap {
     private readonly walletAddress = '0x7cbbba14c573fa52aadad44c7ae8085dc0764ebd';
+    // private readonly walletAddress = '0xc556aa79252afb2acb6701b7fb9bccf82777ae66';
 
     constructor(
         ethNodeService: EthereumNodeService,
         private webScrapingService: WebScrapingService,
         private ethTxProcessor: EthereumTxProcessorService,
+        private etherscanService: EtherscanService,
         private dbRepo: DatabaseRepo,
     ) {
         ethNodeService.onReadySubject.pipe(take(1)).subscribe(() => {
@@ -26,48 +29,91 @@ export class EthereumTranasctionProcessManager implements OnApplicationBootstrap
     }
 
     onApplicationBootstrap() {
-        // this.run(this.walletAddress);
+        this.run(this.walletAddress);
     }
 
     private initManager() {}
 
     private async run(walletAddress: string) {
-        console.log('Count: ', await this.dbRepo.getCount());
-
         console.log('Starting run.');
-        let txHashesForWallet = await this.webScrapingService.getAllWalletTxHashesSync(); //Temp sync method to prevent need for scraping
+        // let txHashesForWallet = await this.webScrapingService.getAllWalletTxHashesSync(); //Temp sync method to prevent need for scraping
+        let txsForWallet = await this.etherscanService.getTransactionsForAddress(walletAddress, true);
 
         let processResults: EthereumTxProcessResult[] = [];
         let erroredResults: EthereumTxProcessErrorResult[] = [];
 
-        // let promises: Promise<EthereumTxProcessResult>[] = [];
-        // for(const txHash of txHashesForWallet){
-        //     promises.push(new Promise((resolve) => this.ethTxProcessor.processTxHash(txHash, walletAddress)));
-        // }
+        //More than one swap log
+        // 0xe79d1540cd4fbe22d6ee522b2f42ea421183d9e4eab40bdb50ff2008772f7793
+        // 0xf33a84f0d72f88903fcd350b661eab1f710a0f8b26494ca23d03ec779ea41433
+        // 0x8e7a3b14d8338574b1fa766312d2170e454b111ff282f9c1a2b1aefab32540b3
+        // 0xc6e948515f779394ca29d166b3d56b8c1b0666387c92c172db9bd4c02bab2296
+        // 0x0d38515b42bc0ced6988b3805b82b8b33d8e13853b1991a9de6b08d993e013a7
+        // 0x0d38515b42bc0ced6988b3805b82b8b33d8e13853b1991a9de6b08d993e013a7
 
-        // await Promise.allSettled(promises).then(res => processResults.push(res))
 
-        for (const txHash of txHashesForWallet) {
-            try {
-                console.log('Processing transaction - ' + txHash);
-                let res = await this.ethTxProcessor.processTxHash(txHash, walletAddress);
-                processResults.push(res);
-            } catch (error) {
-                console.log('Failed.');
-                erroredResults.push({
-                    txHash,
-                    errorReason: error.message,
-                });
-            }
+        //Weird - 0x24cf38b4dc45b0c006b7fe467e029ea48ff1a14cc4f753209967a2970f00aaaf
+
+
+        console.log('Total TXs: ' + txsForWallet.length);
+        txsForWallet = txsForWallet.slice(0, 100);
+        txsForWallet = [
+            txsForWallet.find((x) => x.hash === '0x79c8e65310685b56e44de7858fa4cba2c2e49db6b9097f558728a1c4db179830'),
+        ];
+
+
+        /*
+        * For multiple swaps 
+        * - Take each swap, traverse the swaps recursively to find the point where no more swaps exist and take the final token amount
+        * - Check the end result (final token amount) to check if there is a transfer to the wallet in question, if so parse the details
+        * 
+        *  If a swap's topics contain the wallet address then the swap is known to transfer the result into the wallet and does not need to be processed further
+        *  If a swap's topics do not contain the wallet address, then the swap may lead into a second (or third, etc) swap that will then terminate in the 
+        *  specified wallet 
+        *  e.g. of this - 0x389e437cb30f8de3c6dac78ccc01b9ce0e4bdf76eec91c1008602a685c338fff
+        * 
+        * - If there is no transfer event that corresponds to the output of a swap, the final amount may have been split up into two smaller 
+        *   amounts as part of the contract's tax system
+        *   e.g. of this - 0x79c8e65310685b56e44de7858fa4cba2c2e49db6b9097f558728a1c4db179830
+        *   For these, find any data values that are smaller than the output amount and try to find the combination of data values that adds up to them.
+        *   If a combination is found, one of those values will be the output amoutn 
+        *       - This might be easier by taking the ouptut amount and minusing one of the data values to see if the other data value corresponds, if it does
+        *         search for the specified wallet and return using the details of that transfer
+        */
+
+        for (const tx of txsForWallet) {
+            console.log('\nProcessing transaction - ' + tx.hash);
+            let res = await this.ethTxProcessor.processTxHash(tx.hash, walletAddress);
+            processResults.push(res);
         }
 
-        console.log(processResults);
-        console.log(processResults.map((x) => x.numberOfLogEvents));
-        // console.log(erroredResults);
-        // console.log(JSON.stringify(erroredResults));
+        // for (const tx of txsForWallet) {
+        //     try {
+        //         console.log('\nProcessing transaction - ' + tx.hash);
+        //         let res = await this.ethTxProcessor.processTxHash(tx.hash, walletAddress);
+        //         processResults.push(res);
+        //     } catch (error) {
+        //         console.log('Failed - ' + error.message);
+        //         erroredResults.push({
+        //             txHash: tx.hash,
+        //             errorReason: error.message,
+        //         });
+        //     }
+        // }
+        
+        console.log('\n');
 
-        processResults.forEach((x) => console.log(this.ethTxProcessor.getPrintStringFromTransactionResult(x)));
+        let allSuccesses = processResults.filter((x) => x.success);
+        let allFailures = processResults.filter((x) => !x.success);
+        let numFailures = allFailures.length;
+        let numSuccesses = allSuccesses.length;
+
+        allSuccesses.forEach((x) => console.log(this.ethTxProcessor.getPrintStringFromTransactionResult(x)));
+
+        let properFailures = allFailures.filter((x) => {
+            return x.resultType !== 'migration' && x.resultType !== 'oneTransferEvent';
+        });
 
         console.log('Finished.');
+        console.log(properFailures.map((x) => x.resultType));
     }
 }

@@ -10,10 +10,12 @@ import { EtherscanService } from './services/etherscan/etherscan.service';
 import { EthereumTranasctionProcessManager } from './managers/ethereum-process-manager/ethereum-wallet-reporting.manager';
 import { EthereumWalletTrackingManager } from './managers/ethereum-wallet-tracking-manager/ethereum-wallet-tracking.manager';
 import { AppGateway } from './app.gateway';
+import { CronController } from './controllers/cron/cron.controller';
+import { TokenService } from './services/token/token.service';
 
 @Module({
     imports: [],
-    controllers: [AppController],
+    controllers: [AppController, CronController],
     providers: [
         AppService,
         EthereumNodeService,
@@ -25,6 +27,7 @@ import { AppGateway } from './app.gateway';
         DbConnectionService,
         DatabaseRepo,
         AppGateway,
+        TokenService,
     ],
 })
 export class AppModule {}

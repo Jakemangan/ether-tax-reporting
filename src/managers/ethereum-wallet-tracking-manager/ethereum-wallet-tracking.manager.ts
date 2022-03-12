@@ -26,11 +26,11 @@ export class EthereumWalletTrackingManager implements OnApplicationBootstrap {
     ) {}
 
     onApplicationBootstrap() {
-        this.run();
+        // this.run();
     }
 
     public async run() {
-        let walletAddress = '0x7cbbba14c573fa52aadad44c7ae8085dc0764ebd';
+        let walletAddress = '0x0caC9C3D7196f5BbD76FaDcd771fB69b772c0F9d';
         this.processWalletAddress(walletAddress);
     }
 
@@ -67,16 +67,11 @@ export class EthereumWalletTrackingManager implements OnApplicationBootstrap {
         }
 
         let printStrings = processTxResults.map((x) => this.ethTxProcessor.getPrintStringFromTransactionResult(x));
-        this.gateway.server.emit('outStrings', printStrings);
+        this.gateway.server.emit('outString', printStrings);
 
         for (const res of processTxResults) {
-            await this.dbRepo.insertTxReport(res, walletAddress);
-            // await this.dbRepo.insertInfluencerTransaction({
-            //     timestamp: res.timestamp,
-            //     txHash: res.txHash,
-            //     txToAddress: res.tokenContractAddress,
-            //     walletAddress: walletAddress,
-            // });
+            // TODO :: Decide if needed
+            // await this.dbRepo.insertTxReport(res, walletAddress);
         }
     }
 
@@ -93,9 +88,9 @@ export class EthereumWalletTrackingManager implements OnApplicationBootstrap {
         let transactionsForWallet = await this.etherscanService.getTransactionsForAddress(walletAddress, false);
         transactionsForWallet = transactionsForWallet.sort((a, b) => parseInt(b.timeStamp) - parseInt(a.timeStamp));
 
-        let lastTransaction = transactionsForWallet[0];
+        let lastTransaction = transactionsForWallet[10];
 
-        await this.dbRepo.insertEmptyReport({
+        await this.dbRepo.insertEmptyTxReport({
             timestamp: parseInt(lastTransaction.timeStamp),
             txHash: lastTransaction.hash,
             txToAddress: '',

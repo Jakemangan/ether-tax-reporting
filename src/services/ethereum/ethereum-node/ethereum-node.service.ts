@@ -62,7 +62,7 @@ export class EthereumNodeService implements OnModuleInit {
         return logEvents.filter((x) => x.topics[0] === this.swapSignature);
     }
 
-    formatUnits(amount: number, decimals: number) {
+    formatUnits(amount: string, decimals: number) {
         return ethers.utils.formatUnits(amount, decimals);
     }
 

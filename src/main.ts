@@ -4,7 +4,7 @@ import { WebScrapingService } from './services/web-scraping/web-scraping.service
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
-    await app.listen(3000);
+    await app.listen(5050);
 
     // let s = new WebScrapingService();
     // s.scrapeWalletAddress('0x7cbbba14c573fa52aadad44c7ae8085dc0764ebd')

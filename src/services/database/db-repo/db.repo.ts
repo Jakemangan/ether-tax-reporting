@@ -66,7 +66,7 @@ export class DatabaseRepo {
         }
     }
 
-    async insertEmptyReport(tx: InfluencerTx) {
+    async insertEmptyTxReport(tx: InfluencerTx) {
         try {
             await this.db.pool.query(
                 'INSERT INTO "InfluencerTransactionReports" values ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
@@ -77,24 +77,24 @@ export class DatabaseRepo {
         }
     }
 
-    async insertTxReport(report: EthereumTxReport, walletAddress: string) {
-        try {
-            await this.db.pool.query(
-                'INSERT INTO "InfluencerTransactionReports" values ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
-                [
-                    report.txHash,
-                    report.timestamp,
-                    report.numberOfLogEvents,
-                    report.type,
-                    report.wethAmountDecimal,
-                    report.tokenAmountDecimal,
-                    report.tokenName,
-                    report.tokenContractAddress,
-                    walletAddress,
-                ],
-            );
-        } catch (error) {
-            console.error('Could not insert TxReport - ' + error.message);
-        }
-    }
+    // async insertTxReport(report: EthereumTxReport, walletAddress: string) {
+    //     try {
+    //         await this.db.pool.query(
+    //             'INSERT INTO "InfluencerTransactionReports" values ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
+    //             [
+    //                 report.txHash,
+    //                 report.timestamp,
+    //                 report.numberOfLogEvents,
+    //                 report.type,
+    //                 report.wethAmountDecimal,
+    //                 report.tokenAmountDecimal,
+    //                 report.tokenName,
+    //                 report.tokenContractAddress,
+    //                 walletAddress,
+    //             ],
+    //         );
+    //     } catch (error) {
+    //         console.error('Could not insert TxReport - ' + error.message);
+    //     }
+    // }
 }

@@ -1,9 +1,11 @@
 export enum ProcessTxErrors {
-    OneTransferEvent,
-    UnableToFindContractAddressForToken,
-    AllLogEventsDoNotHaveIdenticalContractAddress,
-    MoreThanOneWethEvent,
-    NoWethEvents,
-    HighNumberOfTransferEvents,
-    
+    oneTransferEvent,
+    unableToFindContractAddressForToken,
+    allLogEventsDoNotHaveIdenticalContractAddress,
+    moreThanOneWethEvent,
+    moreThanOneSwapLog,
+    noWethEvents,
+    noSwapEvents,
+    highNumberOfTransferEvents,
+    cantUseSwap
 }
