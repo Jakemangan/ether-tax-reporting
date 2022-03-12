@@ -7,4 +7,6 @@ export interface EventLog {
     data: string;
     logIndex: number;
     blockHash: string;
+    //CustomProps
+    intermediateEvent?: boolean;
 }

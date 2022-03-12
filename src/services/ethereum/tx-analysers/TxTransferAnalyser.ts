@@ -1,20 +1,22 @@
-import { DetailedTransactionInfo } from 'src/models/DetailedTransactionInfo';
+import { TransactionAction } from 'src/models/DetailedTransactionInfo';
 import { EthereumTxProcessResult } from 'src/models/ethereumTxProcessResult';
 import { EventLog } from 'src/models/EventLog';
-import { ProcessTxErrors } from 'src/models/ProcessTxErrors';
+import { AnalysisResultType } from 'src/models/ProcessTxErrors';
+import { TxAnalyserResult } from 'src/models/TxAnalyserResult';
+import { TokenService } from 'src/services/token/token.service';
 import { EthereumNodeService } from '../ethereum-node/ethereum-node.service';
 import { IBaseAnalyser } from './IBaseAnalyser';
 
 export default class TxTransferAnalyser implements IBaseAnalyser {
     private readonly NULL_ADDRESS: string = '0x0000000000000000000000000000000000000000000000000000000000000000';
 
-    constructor(
-        private ethNodeService: EthereumNodeService
-    ){}
+    name: string = 'TRANSFER';
 
-    async run(transferEvents: EventLog[], swapEvents: EventLog[]): Promise<DetailedTransactionInfo> {
+    constructor(private ethNodeService: EthereumNodeService, private tokenService: TokenService) {}
+
+    async run(transferEvents: EventLog[], swapEvents: EventLog[]): Promise<TxAnalyserResult> {
         /*
-         * Logic v2
+         * Logic
          * Use the last transfer event to figure out whether or not the transaction was a BUY or SELL
          * 1. If the last transaction has WETH address, token is being SOLD for WETH
          * 2. If the last transaction has TOKEN address, token is being BOUGHT with WETH
@@ -28,18 +30,23 @@ export default class TxTransferAnalyser implements IBaseAnalyser {
          *
          */
 
-        if (transferEvents.length === 1) {
-            //TODO :: Return properly here instead of throwing error. Determine contract address before returning.
-            throw new Error(ProcessTxErrors.oneTransferEvent.toString());
-        }
-
         transferEvents = transferEvents.filter((x) => !x.topics.includes(this.NULL_ADDRESS)); //Remove any events concerned with the NULL (burn) address, as these are irrelevant
+
+        if (transferEvents.length === 1) {
+            return {
+                success: false,
+                resultType: AnalysisResultType[AnalysisResultType.simpleTransfer],
+                transactionInfo: null,
+            };
+        }
 
         let uniqueAddressesFromTransfers = [...new Set(transferEvents.map((x) => x.address))];
         if (uniqueAddressesFromTransfers.length > 2) {
-            throw Error('More than 2 unique addresses in transfers');
-        } else if (transferEvents.length === 1) {
-            throw Error(ProcessTxErrors.oneTransferEvent.toString());
+            return {
+                success: false,
+                resultType: AnalysisResultType[AnalysisResultType.moreThan2UniqueAddressesInTransferLogs],
+                transactionInfo: null,
+            };
         }
 
         //Used to determine out and in tokens
@@ -61,8 +68,8 @@ export default class TxTransferAnalyser implements IBaseAnalyser {
         let tokenOutContractAddress = firstInstancesOfUniqueAddressUsage[0].address;
         let tokenInContractAddress = firstInstancesOfUniqueAddressUsage[1].address;
 
-        let tokenOutDetails = await this.getTokenDetails(tokenOutContractAddress);
-        let tokenInDetails = await this.getTokenDetails(tokenInContractAddress);
+        let tokenOutDetails = await this.tokenService.getTokenDetails(tokenOutContractAddress);
+        let tokenInDetails = await this.tokenService.getTokenDetails(tokenInContractAddress);
 
         let outContractAddressTransferEvents = transferEvents.filter((x) => x.address === tokenOutContractAddress);
         outContractAddressTransferEvents.sort((a, b) => {
@@ -87,10 +94,17 @@ export default class TxTransferAnalyser implements IBaseAnalyser {
         );
 
         return {
-            tokenOutAmount: parseFloat(tokenOutAmountInDecimals),
-            tokenOutDetails: tokenOutDetails,
-            tokenInAmount: parseFloat(tokenInAmountInDecimals),
-            tokenInDetails: tokenInDetails,
+            success: true,
+            resultType: AnalysisResultType[AnalysisResultType.success],
+            transactionInfo: [
+                {
+                    tokenExitAmount: parseFloat(tokenOutAmountInDecimals),
+                    tokenExitDetails: tokenOutDetails,
+                    tokenEntryAmount: parseFloat(tokenInAmountInDecimals),
+                    tokenEntryDetails: tokenInDetails,
+                    destinationAddress: 'idk',
+                },
+            ],
         };
     }
 }

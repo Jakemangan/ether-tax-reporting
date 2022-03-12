@@ -1,37 +1,17 @@
-import { DetailedTransactionInfo } from './DetailedTransactionInfo';
+import { AnalysisResults } from './AnalysisErrors';
+import { TransactionAction } from './DetailedTransactionInfo';
+import { AnalysisResultType } from './ProcessTxErrors';
 
 export interface EthereumTxProcessResult {
     success: boolean;
-    resultType: EthereumTxProcessResultType | string;
-    failureMessage: string;
-    resultTransactionDetails: ResultTransactionDetails;
+    analysisResults: AnalysisResults;
+    transactionAnalysisDetails: TransactionAnalysisDetails;
 }
 
-export interface ResultTransactionDetails {
+export interface TransactionAnalysisDetails {
     txHash: string;
     timestamp: number;
     nearest5minTimestamp: number;
     numberOfLogEvents: number;
-    transactionInfo?: DetailedTransactionInfo;
-}
-
-export enum EthereumTxProcessResultType {
-    success,
-    failure,
-    simpleTransfer,
-    migration,
-    oneTransferEvent,
-    unableToFindContractAddressForToken,
-    allLogEventsDoNotHaveIdenticalContractAddress,
-    moreThanOneWethEvent,
-    moreThanOneSwapLog,
-    noWethEvents,
-    noSwapEvents,
-    highNumberOfTransferEvents,
-    cantUseSwap,
-}
-
-export interface EthereumTxProcessError {
-    txHash: string;
-    errorReason: string;
+    transactionActions?: TransactionAction[];
 }

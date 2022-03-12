@@ -1,10 +1,6 @@
 import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { take } from 'rxjs';
-import {
-    EthereumTxProcessError as EthereumTxProcessErrorResult,
-    EthereumTxProcessResult,
-    EthereumTxProcessResultType,
-} from 'src/models/ethereumTxProcessResult';
+import { EthereumTxProcessResult } from 'src/models/ethereumTxProcessResult';
 import { DatabaseRepo } from 'src/services/database/db-repo/db.repo';
 import { EthereumNodeService } from 'src/services/ethereum/ethereum-node/ethereum-node.service';
 import { EthereumTxProcessorService } from 'src/services/ethereum/ethereum-tx-processor/ethereum-tx-processor.service';
@@ -13,8 +9,8 @@ import { WebScrapingService } from 'src/services/web-scraping/web-scraping.servi
 
 @Injectable()
 export class EthereumTranasctionProcessManager implements OnApplicationBootstrap {
-    private readonly walletAddress = '0x7cbbba14c573fa52aadad44c7ae8085dc0764ebd';
-    // private readonly walletAddress = '0xc556aa79252afb2acb6701b7fb9bccf82777ae66';
+    // private readonly walletAddress = '0x7cbbba14c573fa52aadad44c7ae8085dc0764ebd';
+    private readonly walletAddress = '0xc556aa79252afb2acb6701b7fb9bccf82777ae66';
 
     constructor(
         ethNodeService: EthereumNodeService,
@@ -40,7 +36,6 @@ export class EthereumTranasctionProcessManager implements OnApplicationBootstrap
         let txsForWallet = await this.etherscanService.getTransactionsForAddress(walletAddress, true);
 
         let processResults: EthereumTxProcessResult[] = [];
-        let erroredResults: EthereumTxProcessErrorResult[] = [];
 
         //More than one swap log
         // 0xe79d1540cd4fbe22d6ee522b2f42ea421183d9e4eab40bdb50ff2008772f7793
@@ -50,35 +45,33 @@ export class EthereumTranasctionProcessManager implements OnApplicationBootstrap
         // 0x0d38515b42bc0ced6988b3805b82b8b33d8e13853b1991a9de6b08d993e013a7
         // 0x0d38515b42bc0ced6988b3805b82b8b33d8e13853b1991a9de6b08d993e013a7
 
-
         //Weird - 0x24cf38b4dc45b0c006b7fe467e029ea48ff1a14cc4f753209967a2970f00aaaf
 
-
         console.log('Total TXs: ' + txsForWallet.length);
-        txsForWallet = txsForWallet.slice(0, 100);
+        // txsForWallet = txsForWallet.slice(0, 10);
         txsForWallet = [
-            txsForWallet.find((x) => x.hash === '0x79c8e65310685b56e44de7858fa4cba2c2e49db6b9097f558728a1c4db179830'),
+            txsForWallet.find((x) => x.hash === '0x389e437cb30f8de3c6dac78ccc01b9ce0e4bdf76eec91c1008602a685c338fff'),
         ];
 
-
         /*
-        * For multiple swaps 
-        * - Take each swap, traverse the swaps recursively to find the point where no more swaps exist and take the final token amount
-        * - Check the end result (final token amount) to check if there is a transfer to the wallet in question, if so parse the details
-        * 
-        *  If a swap's topics contain the wallet address then the swap is known to transfer the result into the wallet and does not need to be processed further
-        *  If a swap's topics do not contain the wallet address, then the swap may lead into a second (or third, etc) swap that will then terminate in the 
-        *  specified wallet 
-        *  e.g. of this - 0x389e437cb30f8de3c6dac78ccc01b9ce0e4bdf76eec91c1008602a685c338fff
-        * 
-        * - If there is no transfer event that corresponds to the output of a swap, the final amount may have been split up into two smaller 
-        *   amounts as part of the contract's tax system
-        *   e.g. of this - 0x79c8e65310685b56e44de7858fa4cba2c2e49db6b9097f558728a1c4db179830
-        *   For these, find any data values that are smaller than the output amount and try to find the combination of data values that adds up to them.
-        *   If a combination is found, one of those values will be the output amoutn 
-        *       - This might be easier by taking the ouptut amount and minusing one of the data values to see if the other data value corresponds, if it does
-        *         search for the specified wallet and return using the details of that transfer
-        */
+         * For multiple swaps
+         * - Take each swap, traverse the swaps recursively to find the point where no more swaps exist and take the final token amount
+         * - Check the end result (final token amount) to check if there is a transfer to the wallet in question, if so parse the details
+         * - Multiple unrelated swaps may exist, analyser needs to return more than one analysis result
+         *
+         *  If a swap's topics contain the wallet address then the swap is known to transfer the result into the wallet and does not need to be processed further
+         *  If a swap's topics do not contain the wallet address, then the swap may lead into a second (or third, etc) swap that will then terminate in the
+         *  specified wallet
+         *  e.g. of this - 0x389e437cb30f8de3c6dac78ccc01b9ce0e4bdf76eec91c1008602a685c338fff
+         *
+         * - If there is no transfer event that corresponds to the output of a swap, the final amount may have been split up into two smaller
+         *   amounts as part of the contract's tax system
+         *   e.g. of this - 0x79c8e65310685b56e44de7858fa4cba2c2e49db6b9097f558728a1c4db179830
+         *   For these, find any data values that are smaller than the output amount and try to find the combination of data values that adds up to them.
+         *   If a combination is found, one of those values will be the output amoutn
+         *       - This might be easier by taking the ouptut amount and minusing one of the data values to see if the other data value corresponds, if it does
+         *         search for the specified wallet and return using the details of that transfer
+         */
 
         for (const tx of txsForWallet) {
             console.log('\nProcessing transaction - ' + tx.hash);
@@ -99,21 +92,22 @@ export class EthereumTranasctionProcessManager implements OnApplicationBootstrap
         //         });
         //     }
         // }
-        
-        console.log('\n');
 
         let allSuccesses = processResults.filter((x) => x.success);
         let allFailures = processResults.filter((x) => !x.success);
         let numFailures = allFailures.length;
         let numSuccesses = allSuccesses.length;
 
-        allSuccesses.forEach((x) => console.log(this.ethTxProcessor.getPrintStringFromTransactionResult(x)));
-
-        let properFailures = allFailures.filter((x) => {
-            return x.resultType !== 'migration' && x.resultType !== 'oneTransferEvent';
+        allSuccesses.forEach((x) => {
+            let outStrs = this.ethTxProcessor.getPrintStringFromTransactionResult(x);
+            outStrs.forEach((x) => console.log(x));
         });
 
-        console.log('Finished.');
-        console.log(properFailures.map((x) => x.resultType));
+        // let properFailures = allFailures.filter((x) => {
+        //     return x.analysisResults !== 'migration' && x.analysisResults !== 'oneTransferEvent';
+        // });
+
+        console.log('\nFinished.');
+        // console.log(properFailures.map((x) => x.analysisResults));
     }
 }
