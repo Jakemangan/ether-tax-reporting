@@ -59,16 +59,16 @@ export default class TxMultiSwapAnalyser implements IBaseAnalyser {
         transferEvents: EventLog[],
         swapChain: EventLog[],
     ): Promise<TransactionAction> {
-        // if (rootSwap.intermediateEvent) {
-        //     return;
-        // }
+        if (!rootSwap.topics[2].includes(this.nonHex(this.walletAddress))) {
+            return;
+        }
 
         let rootSwapData = this.getSwapDataElements(rootSwap);
 
         for (const leafSwap of swapEvents) {
             let leafSwapData = this.getSwapDataElements(leafSwap);
 
-            if (rootSwapData.outAmount === leafSwapData.inAmount) {
+            if (rootSwapData.inAmount === leafSwapData.outAmount) {
                 //We don't want to return any actions that includes swaps that don't involve the user's wallet.
                 // this.markAsIntermediateIfRequired(rootSwap);
                 swapChain.push(leafSwap);
@@ -80,90 +80,90 @@ export default class TxMultiSwapAnalyser implements IBaseAnalyser {
 
         console.log('Reached end of traversal');
         let lastSwapInChain = swapChain[swapChain.length - 1];
-        if (lastSwapInChain.topics[2].includes(this.nonHex(this.walletAddress))) {
-            //Exit point is provided wallet, build the swap chain details and return
-            let intermediateSwaps: IntermediateSwap[] = [];
-            for (let i = 0; i < swapChain.length; i++) {
-                let intSwap = swapChain[i];
-                let intermediateSwapData = this.getSwapDataElements(intSwap);
+        // if (lastSwapInChain.topics[2].includes(this.nonHex(this.walletAddress))) {
+        //Exit point is provided wallet, build the swap chain details and return
+        let intermediateSwaps: IntermediateSwap[] = [];
+        for (let i = swapChain.length - 1; i > 0; i--) {
+            let intSwap = swapChain[i];
+            let intermediateSwapData = this.getSwapDataElements(intSwap);
 
-                //Token details
-                let intermediateSwapTokenInDetails = await this.getTokenDetailsUsingSwapDataValue(
-                    intermediateSwapData.inAmount,
-                    transferEvents,
-                );
-                let intermediateSwapTokenOutDetails = await this.getTokenDetailsUsingSwapDataValue(
-                    intermediateSwapData.outAmount,
-                    transferEvents,
-                );
-
-                //Token amounts
-                let intermediateSwapTokenInAmountDecimal = this.getDecimalTokenAmountFromHex(
-                    intermediateSwapData.inAmount,
-                    intermediateSwapTokenInDetails,
-                );
-                let intermediateSwapTokenOutAmountDecimal = this.getDecimalTokenAmountFromHex(
-                    intermediateSwapData.outAmount,
-                    intermediateSwapTokenOutDetails,
-                );
-
-                intermediateSwaps.push({
-                    index: i,
-                    logIndex: intSwap.logIndex,
-                    destinationAddress: intSwap.topics[2],
-                    tokenInAmount: parseFloat(intermediateSwapTokenInAmountDecimal),
-                    tokenInDetails: intermediateSwapTokenInDetails,
-                    tokenOutAmount: parseFloat(intermediateSwapTokenOutAmountDecimal),
-                    tokenOutDetails: intermediateSwapTokenOutDetails,
-                });
-            }
-
-            /*
-             * Since we include all of the swaps into the intermediateSwap array, the entry and exit token information should be
-             * present regardless if there was a single swap or 100. It's the first swap's IN that represents the ENTRY token and the
-             * last swap's OUT that repersents the EXIT token.
-             */
-
-            //Not sure this is needed
-            // let firstSwap = intermediateSwaps[0];
-            // tokenInDetails = await this.getTokenDetailsUsingSwapDataValue(firstSwap.tokenInAmount, transferEvents);
-            // tokenInAmountDecimal = this.getDecimalTokenAmountFromHex(firstSwap.inAmount, tokenInDetails);
-
-            // let lastSwap = intermediateSwaps[intermediateSwaps.length - 1];
-            // tokenOutAmountDecimal = lastSwap.tokenOutAmount; //Token out amount here is already a float, so no need to parse
-            // tokenOutDetails = lastSwap.tokenOutDetails;
-
-            // //If there are any intermediate swaps, use them to determine the token out details
-            // if (intermediateSwaps.length) {
-            //     let firstSwap = intermediateSwaps[0];
-            //     let tokenInDetails = await this.getTokenDetailsUsingSwapDataValue(firstSwap., transferEvents);
-            //     let tokenInAmountDecimal = this.getDecimalTokenAmountFromHex(firstSwap.inAmount, tokenInDetails);
-            //     //At this point, the last swap detail object in the IntermediateSwaps array is the exit swap so we can use that.
-            //     let lastSwap = intermediateSwaps[intermediateSwaps.length - 1];
-            //     tokenOutAmountDecimal = lastSwap.tokenOutAmount; //Token out amount here is already a float, so no need to parse
-            //     tokenOutDetails = lastSwap.tokenOutDetails;
-            // } else {
-            //     //Else, use the details in the rootSwap
-            //     tokenOutDetails = await this.getTokenDetailsUsingSwapDataValue(rootSwapData.outAmount, transferEvents);
-            //     tokenOutAmountDecimal = this.getDecimalTokenAmountFromHex(rootSwapData.outAmount, tokenOutDetails);
-            // }
-
-            let firstSwap = intermediateSwaps[0];
-            let lastSwap = intermediateSwaps[intermediateSwaps.length - 1];
-
-            return {
-                tokenEntryAmount: firstSwap.tokenInAmount,
-                tokenEntryDetails: firstSwap.tokenInDetails,
-                tokenExitAmount: lastSwap.tokenOutAmount,
-                tokenExitDetails: lastSwap.tokenOutDetails,
-                destinationAddress: lastSwap.destinationAddress,
-                intermediateSwaps: intermediateSwaps,
-            };
-        } else {
-            throw new Error(
-                'The last address in the swapChain does not match provided wallet. Not sure what the fuck to dooooo',
+            //Token details
+            let intermediateSwapTokenInDetails = await this.getTokenDetailsUsingSwapDataValue(
+                intermediateSwapData.inAmount,
+                transferEvents,
             );
+            let intermediateSwapTokenOutDetails = await this.getTokenDetailsUsingSwapDataValue(
+                intermediateSwapData.outAmount,
+                transferEvents,
+            );
+
+            //Token amounts
+            let intermediateSwapTokenInAmountDecimal = this.getDecimalTokenAmountFromHex(
+                intermediateSwapData.inAmount,
+                intermediateSwapTokenInDetails,
+            );
+            let intermediateSwapTokenOutAmountDecimal = this.getDecimalTokenAmountFromHex(
+                intermediateSwapData.outAmount,
+                intermediateSwapTokenOutDetails,
+            );
+
+            intermediateSwaps.push({
+                index: i,
+                logIndex: intSwap.logIndex,
+                destinationAddress: intSwap.topics[2],
+                tokenInAmount: parseFloat(intermediateSwapTokenInAmountDecimal),
+                tokenInDetails: intermediateSwapTokenInDetails,
+                tokenOutAmount: parseFloat(intermediateSwapTokenOutAmountDecimal),
+                tokenOutDetails: intermediateSwapTokenOutDetails,
+            });
         }
+
+        /*
+         * Since we include all of the swaps into the intermediateSwap array, the entry and exit token information should be
+         * present regardless if there was a single swap or 100. It's the first swap's IN that represents the ENTRY token and the
+         * last swap's OUT that repersents the EXIT token.
+         */
+
+        //Not sure this is needed
+        // let firstSwap = intermediateSwaps[0];
+        // tokenInDetails = await this.getTokenDetailsUsingSwapDataValue(firstSwap.tokenInAmount, transferEvents);
+        // tokenInAmountDecimal = this.getDecimalTokenAmountFromHex(firstSwap.inAmount, tokenInDetails);
+
+        // let lastSwap = intermediateSwaps[intermediateSwaps.length - 1];
+        // tokenOutAmountDecimal = lastSwap.tokenOutAmount; //Token out amount here is already a float, so no need to parse
+        // tokenOutDetails = lastSwap.tokenOutDetails;
+
+        // //If there are any intermediate swaps, use them to determine the token out details
+        // if (intermediateSwaps.length) {
+        //     let firstSwap = intermediateSwaps[0];
+        //     let tokenInDetails = await this.getTokenDetailsUsingSwapDataValue(firstSwap., transferEvents);
+        //     let tokenInAmountDecimal = this.getDecimalTokenAmountFromHex(firstSwap.inAmount, tokenInDetails);
+        //     //At this point, the last swap detail object in the IntermediateSwaps array is the exit swap so we can use that.
+        //     let lastSwap = intermediateSwaps[intermediateSwaps.length - 1];
+        //     tokenOutAmountDecimal = lastSwap.tokenOutAmount; //Token out amount here is already a float, so no need to parse
+        //     tokenOutDetails = lastSwap.tokenOutDetails;
+        // } else {
+        //     //Else, use the details in the rootSwap
+        //     tokenOutDetails = await this.getTokenDetailsUsingSwapDataValue(rootSwapData.outAmount, transferEvents);
+        //     tokenOutAmountDecimal = this.getDecimalTokenAmountFromHex(rootSwapData.outAmount, tokenOutDetails);
+        // }
+
+        let firstSwap = intermediateSwaps[0];
+        let lastSwap = intermediateSwaps[intermediateSwaps.length - 1];
+
+        return {
+            tokenEntryAmount: firstSwap.tokenInAmount,
+            tokenEntryDetails: firstSwap.tokenInDetails,
+            tokenExitAmount: lastSwap.tokenOutAmount,
+            tokenExitDetails: lastSwap.tokenOutDetails,
+            destinationAddress: lastSwap.destinationAddress,
+            intermediateSwaps: intermediateSwaps,
+        };
+        // } else {
+        //     throw new Error(
+        //         'The last address in the swapChain does not match provided wallet. Not sure what the fuck to dooooo',
+        //     );
+        // }
     }
 
     private async getTokenDetailsUsingSwapDataValue(
