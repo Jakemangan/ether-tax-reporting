@@ -20,49 +20,47 @@ export default class TxMultiSwapAnalyser implements IBaseAnalyser {
         this.walletAddress = walletAddress;
         this.swapEvents = swapEvents;
 
-        if (this.swapEvents.length < 2) {
+        if (this.swapEvents.length < 1) {
             return {
                 success: false,
+                shouldContinue: true,
                 resultType: AnalysisResultType[AnalysisResultType.tooFewSwapEventsForMultiSwapAnalyser],
                 transactionInfo: null,
             };
         }
 
-        let analyserResults: TransactionAction[] = [];
-        for (const swapEvent of this.swapEvents) {
-            let res = await this.traverseSwaps(swapEvent, this.swapEvents, transferEvents, [swapEvent]);
-            analyserResults.push(res);
-        }
-
-        //If any of the actions contain a destination address that does not match the user's wallet address then
-        //remove the action from the results array.
-        for (const action of analyserResults) {
-            if (!action.destinationAddress.includes(this.nonHex(this.walletAddress))) {
-                analyserResults.slice(analyserResults.indexOf(action), analyserResults.indexOf(action) + 1);
+        //TODO :: Improve this with proper error returns
+        try {
+            let analyserResults: TransactionAction[] = [];
+            for (const swapEvent of this.swapEvents) {
+                let res = await this.traverseSwaps(swapEvent, this.swapEvents, transferEvents, [swapEvent]);
+                if (res) {
+                    analyserResults.push(res);
+                }
             }
-        }
 
-        return {
-            success: true,
-            resultType: AnalysisResultType[AnalysisResultType.success],
-            transactionInfo: analyserResults,
-        };
+            return {
+                success: true,
+                shouldContinue: false,
+                resultType: AnalysisResultType[AnalysisResultType.success],
+                transactionInfo: analyserResults,
+            };
+        } catch (error) {
+            return {
+                success: false,
+                shouldContinue: true,
+                resultType: AnalysisResultType[AnalysisResultType.multiSwapAnalyserFailure],
+                transactionInfo: null,
+            };
+        }
     }
 
-    // TODO :: Currently intermediate swaps are being added to the results array, this is inefficient as we're wasting
-    // processing power on swaps we don't care about. A better solution here would be to work recusively backwards starting
-    // with every exit swap that includes the user's wallet. If the swap doesn't contain the user's wallet as a topic, don't bother
-    // processing it until we need it as a chain link for a swap we care about. Day 2
     private async traverseSwaps(
         rootSwap: EventLog,
         swapEvents: EventLog[],
         transferEvents: EventLog[],
         swapChain: EventLog[],
     ): Promise<TransactionAction> {
-        if (!rootSwap.topics[2].includes(this.nonHex(this.walletAddress))) {
-            return;
-        }
-
         let rootSwapData = this.getSwapDataElements(rootSwap);
 
         for (const leafSwap of swapEvents) {
@@ -78,8 +76,7 @@ export default class TxMultiSwapAnalyser implements IBaseAnalyser {
             }
         }
 
-        console.log('Reached end of traversal');
-        //Reverse swap chain
+        //Reverse swapChain as we recurse backwards to build the connections between swaps
         let temp = [];
         let swapChainLength = swapChain.length;
         for (let i = 0; i < swapChainLength; i++) {
@@ -87,7 +84,6 @@ export default class TxMultiSwapAnalyser implements IBaseAnalyser {
         }
         swapChain = [].concat(temp);
 
-        // if (lastSwapInChain.topics[2].includes(this.nonHex(this.walletAddress))) {
         //Exit point is provided wallet, build the swap chain details and return
         let intermediateSwaps: IntermediateSwap[] = [];
         for (let i = 0; i < swapChain.length; i++) {
@@ -108,10 +104,12 @@ export default class TxMultiSwapAnalyser implements IBaseAnalyser {
             let intermediateSwapTokenInAmountDecimal = this.getDecimalTokenAmountFromHex(
                 intermediateSwapData.inAmount,
                 intermediateSwapTokenInDetails,
+                transferEvents,
             );
             let intermediateSwapTokenOutAmountDecimal = this.getDecimalTokenAmountFromHex(
                 intermediateSwapData.outAmount,
                 intermediateSwapTokenOutDetails,
+                transferEvents,
             );
 
             intermediateSwaps.push({
@@ -166,29 +164,104 @@ export default class TxMultiSwapAnalyser implements IBaseAnalyser {
             destinationAddress: lastSwap.destinationAddress,
             intermediateSwaps: intermediateSwaps,
         };
-        // } else {
-        //     throw new Error(
-        //         'The last address in the swapChain does not match provided wallet. Not sure what the fuck to dooooo',
-        //     );
-        // }
     }
 
+    //TODO :: If the proper transfer log needs to deduced by adding values then the actual value
+    //        returned to the user will be different to what returned currently. The EXIT amount
+    //        should be adjusted to this actual amount returned.
     private async getTokenDetailsUsingSwapDataValue(
         amountToFind: string,
         transferEvents: EventLog[],
     ): Promise<TokenDetails> {
         let tokenTransferLog = transferEvents.find((x) => this.nonHex(x.data) === amountToFind);
+        if (!tokenTransferLog) {
+            //Simple match of data for transfer-swap has failed, value may have been split into tax by contract.
+            tokenTransferLog = this.deduceActualTransferLog(amountToFind, transferEvents);
+            if (!tokenTransferLog) {
+                throw new Error('Could not deduce correct transfer log');
+            }
+        }
         return await this.tokenService.getTokenDetails(tokenTransferLog.address);
     }
 
-    private getDecimalTokenAmountFromHex(hexAmount: string, tokenDetails: TokenDetails) {
-        return this.ethNodeService.formatUnits('0x' + hexAmount, tokenDetails.decimals);
+    private deduceActualTransferLog(amountToFindHex: string, transferEvents: EventLog[]): EventLog {
+        let actualTransferLog = this.deduceActualTransferLogThroughSum(amountToFindHex, transferEvents);
+        if (actualTransferLog) {
+            return actualTransferLog;
+        }
+        return null;
+        // actualTransferLog = this.deduceActualTransferLogThroughTaxThreshold(amountToFindHex, transferEvents);
+        // if (actualTransferLog) {
+        //     return actualTransferLog;
+        // }
     }
 
-    private markAsIntermediateIfRequired(swapEvent: EventLog) {
-        if (!swapEvent.topics[2].includes(this.nonHex(this.walletAddress))) {
-            this.swapEvents.find((x) => x.logIndex === swapEvent.logIndex).intermediateEvent = true;
+    private deduceActualTransferLogThroughSum(amountToFindHex: string, transferEvents: EventLog[]): EventLog {
+        for (let event of transferEvents) {
+            for (let event2 of transferEvents) {
+                let decimal1 = parseInt(event.data);
+                let decimal2 = parseInt(event2.data);
+                let total = decimal1 + decimal2;
+                let totalAsHex = total.toString(16).padStart(64, '0');
+                if (totalAsHex === amountToFindHex) {
+                    //Found combination of transfer event values that equal the swap output
+                    //Use the greater of the two (the one that hasn't been siphoned for tax, as the proper value)
+                    if (decimal1 > decimal2) {
+                        return event;
+                    } else {
+                        return event2;
+                    }
+                }
+            }
         }
+    }
+
+    /*
+     *   Attempt to deduce the correct transfer log by finding a transfer log that has a data value within a certain
+     *   tax threshold.
+     */
+    // private async deduceActualTransferLogThroughTaxThreshold(
+    //     amountToFindHex: string,
+    //     transferEvents: EventLog[],
+    // ): Promise<EventLog> {
+    //     let taxThresholds = [10, 20, 30];
+    //     if (!amountToFindHex.startsWith('0x')) {
+    //         amountToFindHex = '0x' + amountToFindHex;
+    //     }
+    //     let amountToFindDecimal = parseInt(amountToFindHex);
+
+    //     for (let threshold of taxThresholds) {
+    //         let percentageOf = 100 - threshold;
+    //         let amountToFindReduced = (amountToFindDecimal / 100) * percentageOf;
+    //         for (let event of transferEvents) {
+    //             let tokenDetails = await this.tokenService.getTokenDetails(event.address);
+    //             if (!tokenDetails) {
+    //                 continue;
+    //             }
+    //             let eventAmountDecimal = this.ethNodeService.formatUnits(event.data, tokenDetails.decimals);
+
+    //             if (eventAmountDecimal >= amountToFindReduced) {
+    //                 return event;
+    //             }
+    //         }
+    //     }
+    // }
+
+    /*
+     *   For the returned amount to be valid it needs to be present in a transfer log highlighting the return of the
+     *   swapped amount to the user's wallet. If a transfer log with the specified amount isn't present then the total
+     *   amount may have split up for contract tax. In which case we need to find the proper amount.
+     */
+    private getDecimalTokenAmountFromHex(hexAmount: string, tokenDetails: TokenDetails, transferEvents: EventLog[]) {
+        let matchTransferEvent = transferEvents.find((x) => this.nonHex(x.data) === hexAmount);
+        if (!matchTransferEvent) {
+            //The value provided doesn't match any transfer logs, so we need to find the proper log for the amount
+            //and replace the provided value with the amount in the actual transfer log
+            matchTransferEvent = this.deduceActualTransferLogThroughSum(hexAmount, transferEvents);
+            hexAmount = matchTransferEvent.data;
+        }
+
+        return this.ethNodeService.formatUnits(hexAmount, tokenDetails.decimals);
     }
 
     /*
@@ -206,7 +279,7 @@ export default class TxMultiSwapAnalyser implements IBaseAnalyser {
         for (var i = 0, charsLength = swapData.length; i < charsLength; i += 64) {
             let element = swapData.substring(i, i + 64);
             element = element.replace(/0/g, '');
-            if (element !== '') {
+            if (element !== '' && element !== '1') {
                 swapEventDataElements.push(swapData.substring(i, i + 64));
             }
         }

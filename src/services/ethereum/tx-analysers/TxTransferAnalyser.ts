@@ -32,18 +32,11 @@ export default class TxTransferAnalyser implements IBaseAnalyser {
 
         transferEvents = transferEvents.filter((x) => !x.topics.includes(this.NULL_ADDRESS)); //Remove any events concerned with the NULL (burn) address, as these are irrelevant
 
-        if (transferEvents.length === 1) {
-            return {
-                success: false,
-                resultType: AnalysisResultType[AnalysisResultType.simpleTransfer],
-                transactionInfo: null,
-            };
-        }
-
         let uniqueAddressesFromTransfers = [...new Set(transferEvents.map((x) => x.address))];
         if (uniqueAddressesFromTransfers.length > 2) {
             return {
                 success: false,
+                shouldContinue: true,
                 resultType: AnalysisResultType[AnalysisResultType.moreThan2UniqueAddressesInTransferLogs],
                 transactionInfo: null,
             };
@@ -95,13 +88,14 @@ export default class TxTransferAnalyser implements IBaseAnalyser {
 
         return {
             success: true,
+            shouldContinue: false,
             resultType: AnalysisResultType[AnalysisResultType.success],
             transactionInfo: [
                 {
-                    tokenExitAmount: parseFloat(tokenOutAmountInDecimals),
-                    tokenExitDetails: tokenOutDetails,
-                    tokenEntryAmount: parseFloat(tokenInAmountInDecimals),
-                    tokenEntryDetails: tokenInDetails,
+                    tokenEntryAmount: parseFloat(tokenOutAmountInDecimals),
+                    tokenEntryDetails: tokenOutDetails,
+                    tokenExitAmount: parseFloat(tokenInAmountInDecimals),
+                    tokenExitDetails: tokenInDetails,
                     destinationAddress: 'idk',
                 },
             ],

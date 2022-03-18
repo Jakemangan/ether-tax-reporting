@@ -9,8 +9,8 @@ import { WebScrapingService } from 'src/services/web-scraping/web-scraping.servi
 
 @Injectable()
 export class EthereumTranasctionProcessManager implements OnApplicationBootstrap {
-    // private readonly walletAddress = '0x7cbbba14c573fa52aadad44c7ae8085dc0764ebd';
-    private readonly walletAddress = '0xc556aa79252afb2acb6701b7fb9bccf82777ae66';
+    private readonly walletAddress = '0x7cbbba14c573fa52aadad44c7ae8085dc0764ebd';
+    // private readonly walletAddress = '0xc556aa79252afb2acb6701b7fb9bccf82777ae66';
 
     constructor(
         ethNodeService: EthereumNodeService,
@@ -50,8 +50,27 @@ export class EthereumTranasctionProcessManager implements OnApplicationBootstrap
         console.log('Total TXs: ' + txsForWallet.length);
         // txsForWallet = txsForWallet.slice(0, 10);
         txsForWallet = [
-            txsForWallet.find((x) => x.hash === '0x389e437cb30f8de3c6dac78ccc01b9ce0e4bdf76eec91c1008602a685c338fff'),
+            txsForWallet.find((x) => x.hash === '0xc6e948515f779394ca29d166b3d56b8c1b0666387c92c172db9bd4c02bab2296'),
         ];
+
+        /*
+         *  ETH theory
+         *  - Swaps are preceeded and succeeded by transfers as all tokens to be swapped must be transferred to a token pair
+         *    before they are swapped and then the output is transferred to wherever it needs to go.
+         *  - For WETH -> TOKEN swaps:
+         *        1. WETH is transferred from ROUTER to token pair
+         *        2. TOKEN is transferred from pair to user wallet
+         *  - For TOKEN -> WETH swaps:
+         *        1. TOKEN is transferred from user wallet to pair
+         *        2. WETH is transferred from pair to ROUTER
+         *
+         *
+         *  For swaps, it's likely that only the token0 amount will be different from the actual swap amount due to tax etc
+         *  The output amount will go to the wallet directly and will be untaxed, so the transfer out event should be easily linked
+         *  to the swap. The transfer in amount will likely need to be deduced using an increasing tax threshholdw
+         * 
+         *  Build out a connection object of transfer-swap-transfer to better highlight the entire lifetime of the tx
+         */
 
         /*
          * For multiple swaps
@@ -95,13 +114,22 @@ export class EthereumTranasctionProcessManager implements OnApplicationBootstrap
 
         let allSuccesses = processResults.filter((x) => x.success);
         let allFailures = processResults.filter((x) => !x.success);
+        let properFailures = processResults.filter((x) => !x.success && !x.unprocessable);
         let numFailures = allFailures.length;
         let numSuccesses = allSuccesses.length;
 
-        allSuccesses.forEach((x) => {
+        let successesWithMoreThanOneAction = processResults.filter(
+            (x) => x.transactionAnalysisDetails.transactionActions.length > 1,
+        );
+        let successesOneAction = processResults.filter(
+            (x) => x.transactionAnalysisDetails.transactionActions.length === 1,
+        );
+
+        console.log('\n');
+        for (let x of allSuccesses) {
             let outStrs = this.ethTxProcessor.getPrintStringFromTransactionResult(x);
             outStrs.forEach((x) => console.log(x));
-        });
+        }
 
         // let properFailures = allFailures.filter((x) => {
         //     return x.analysisResults !== 'migration' && x.analysisResults !== 'oneTransferEvent';

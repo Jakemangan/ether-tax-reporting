@@ -4,6 +4,7 @@ import { AnalysisResultType } from './ProcessTxErrors';
 
 export interface EthereumTxProcessResult {
     success: boolean;
+    unprocessable: boolean;
     analysisResults: AnalysisResults;
     transactionAnalysisDetails: TransactionAnalysisDetails;
 }
