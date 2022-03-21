@@ -38,7 +38,7 @@ export default class TxTransferAnalyser implements IBaseAnalyser {
                 success: false,
                 shouldContinue: true,
                 resultType: AnalysisResultType[AnalysisResultType.moreThan2UniqueAddressesInTransferLogs],
-                transactionInfo: null,
+                transactionActions: null,
             };
         }
 
@@ -90,12 +90,12 @@ export default class TxTransferAnalyser implements IBaseAnalyser {
             success: true,
             shouldContinue: false,
             resultType: AnalysisResultType[AnalysisResultType.success],
-            transactionInfo: [
+            transactionActions: [
                 {
-                    tokenEntryAmount: parseFloat(tokenOutAmountInDecimals),
-                    tokenEntryDetails: tokenOutDetails,
-                    tokenExitAmount: parseFloat(tokenInAmountInDecimals),
-                    tokenExitDetails: tokenInDetails,
+                    tokenOutAmount: parseFloat(tokenOutAmountInDecimals),
+                    tokenOutDetails: tokenOutDetails,
+                    tokenInAmount: parseFloat(tokenInAmountInDecimals),
+                    tokenInDetails: tokenInDetails,
                     destinationAddress: 'idk',
                 },
             ],

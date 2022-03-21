@@ -5,5 +5,5 @@ export interface TxAnalyserResult {
     success: boolean;
     shouldContinue: boolean;
     resultType: AnalysisResultType | string;
-    transactionInfo: TransactionAction[];
+    transactionActions: TransactionAction[];
 }

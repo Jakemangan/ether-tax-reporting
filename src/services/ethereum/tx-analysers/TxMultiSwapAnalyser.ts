@@ -25,7 +25,7 @@ export default class TxMultiSwapAnalyser implements IBaseAnalyser {
                 success: false,
                 shouldContinue: true,
                 resultType: AnalysisResultType[AnalysisResultType.tooFewSwapEventsForMultiSwapAnalyser],
-                transactionInfo: null,
+                transactionActions: null,
             };
         }
 
@@ -43,14 +43,14 @@ export default class TxMultiSwapAnalyser implements IBaseAnalyser {
                 success: true,
                 shouldContinue: false,
                 resultType: AnalysisResultType[AnalysisResultType.success],
-                transactionInfo: analyserResults,
+                transactionActions: analyserResults,
             };
         } catch (error) {
             return {
                 success: false,
                 shouldContinue: true,
                 resultType: AnalysisResultType[AnalysisResultType.multiSwapAnalyserFailure],
-                transactionInfo: null,
+                transactionActions: null,
             };
         }
     }
@@ -157,10 +157,10 @@ export default class TxMultiSwapAnalyser implements IBaseAnalyser {
         let lastSwap = intermediateSwaps[intermediateSwaps.length - 1];
 
         return {
-            tokenEntryAmount: firstSwap.tokenInAmount,
-            tokenEntryDetails: firstSwap.tokenInDetails,
-            tokenExitAmount: lastSwap.tokenOutAmount,
-            tokenExitDetails: lastSwap.tokenOutDetails,
+            tokenOutAmount: firstSwap.tokenInAmount,
+            tokenOutDetails: firstSwap.tokenInDetails,
+            tokenInAmount: lastSwap.tokenOutAmount,
+            tokenInDetails: lastSwap.tokenOutDetails,
             destinationAddress: lastSwap.destinationAddress,
             intermediateSwaps: intermediateSwaps,
         };

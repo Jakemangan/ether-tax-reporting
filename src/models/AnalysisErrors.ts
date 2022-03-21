@@ -1,4 +1,4 @@
-import { AnalysisResultType as AnalysisResultTypes } from "./ProcessTxErrors";
+import { AnalysisResultType as AnalysisResultTypes } from './ProcessTxErrors';
 
 export interface AnalysisResults {
     [key: string]: {
