@@ -1,26 +1,15 @@
-import { ConsoleLogger, Injectable } from '@nestjs/common';
-import { last } from 'cheerio/lib/api/traversing';
-import { reverse } from 'dns';
-import { first } from 'rxjs';
+import { Injectable } from '@nestjs/common';
 import { AnalysisResults } from 'src/models/AnalysisErrors';
 import { TransactionAction } from 'src/models/DetailedTransactionInfo';
-import { EthereumTransactionDetails } from 'src/models/EthereumTransactionDetails';
-import { EthereumTxProcessResult, TransactionAnalysisDetails } from 'src/models/ethereumTxProcessResult';
+import { EthereumTxProcessResult } from 'src/models/ethereumTxProcessResult';
 import { AnalysisResultMessages, AnalysisResultType } from 'src/models/ProcessTxErrors';
-import { RelevantTransferEvents } from 'src/models/relevantTransferEvents';
-import { TokenDetails } from 'src/models/tokenDetails';
-import { TxAnalyserResult } from 'src/models/TxAnalyserResult';
-import { DatabaseRepo } from 'src/services/database/db-repo/db.repo';
 import { TokenService } from 'src/services/token/token.service';
-import { WebScrapingService } from 'src/services/web-scraping/web-scraping.service';
 import { EthereumNodeService } from '../ethereum-node/ethereum-node.service';
 import { IBaseAnalyser } from '../tx-analysers/IBaseAnalyser';
 import TxMultiSwapAnalyser from '../tx-analysers/TxMultiSwapAnalyser';
 import TxPreAnalyser from '../tx-analysers/TxPreAnalyser';
 import TxSingleSwapAnalyser from '../tx-analysers/TxSingleSwapAnalyser';
 import TxTransferAnalyser from '../tx-analysers/TxTransferAnalyser';
-import tokenDetails from './tokenDetails';
-import weth from './wethDetails';
 
 @Injectable()
 export class EthereumTxProcessorService {

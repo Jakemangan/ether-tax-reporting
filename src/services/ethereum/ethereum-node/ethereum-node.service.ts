@@ -2,7 +2,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ethers } from 'ethers';
 import genericAbi from './genericAbi';
 import { Subject } from 'rxjs';
-import { EthereumTransactionDetails } from 'src/models/EthereumTransactionDetails';
+import { EthereumTransactionDetails } from 'src/models/ethereumTransactionDetails';
 
 @Injectable()
 export class EthereumNodeService implements OnModuleInit {

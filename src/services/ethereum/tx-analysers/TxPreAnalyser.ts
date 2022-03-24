@@ -1,4 +1,4 @@
-import { EthereumTransactionDetails } from 'src/models/EthereumTransactionDetails';
+import { EthereumTransactionDetails } from 'src/models/ethereumTransactionDetails';
 import { EventLog } from 'src/models/EventLog';
 import { AnalysisResultType } from 'src/models/ProcessTxErrors';
 import { TxAnalyserResult } from 'src/models/TxAnalyserResult';
