@@ -11,7 +11,6 @@ import { PgAnyResult, PgResult } from 'src/models/pgResult';
 import { TimestampRange } from 'src/models/TimestampRange';
 import { TokenDetails } from 'src/models/tokenDetails';
 import { DbConnectionService } from '../db-connection/db-connection.service';
-import { format } from 'pg-format';
 
 @Injectable()
 export class DatabaseRepo {
