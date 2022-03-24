@@ -28,6 +28,7 @@
     "@nestjs/platform-socket.io": "^8.4.0",
     "@nestjs/websockets": "^8.4.0",
     "cheerio": "^1.0.0-rc.10",
+    "cors": "^2.8.5",
     "ethers": "^5.5.4",
     "node-fetch": "^2.6.7",
     "pg": "^8.7.3",

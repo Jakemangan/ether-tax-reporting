@@ -10,12 +10,12 @@ import { EtherscanService } from './services/etherscan/etherscan.service';
 import { EthereumTranasctionProcessManager } from './managers/ethereum-process-manager/ethereum-wallet-reporting.manager';
 import { EthereumWalletTrackingManager } from './managers/ethereum-wallet-tracking-manager/ethereum-wallet-tracking.manager';
 import { AppGateway } from './app.gateway';
-import { CronController } from './controllers/cron/cron.controller';
 import { TokenService } from './services/token/token.service';
+import { WaitinglistController } from './controllers/waitinglist/waitinglist.controller';
 
 @Module({
     imports: [],
-    controllers: [AppController, CronController],
+    controllers: [AppController, WaitinglistController],
     providers: [
         AppService,
         EthereumNodeService,

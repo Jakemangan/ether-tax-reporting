@@ -17,6 +17,10 @@ export class DatabaseRepo {
         return res;
     }
 
+    async insertWaitingListEmail(email: string): Promise<void> {
+        await this.db.pool.query(`insert into "waitingList" values ('${email}')`);
+    }
+
     // async insertTreasuryDatapoint(datapoint: Datapoint) {
     //     const res = await this.db.pool.query(
     //         'INSERT INTO treasury_data (value, "dateCreated", "projectName") values ($1, $2, $3)',

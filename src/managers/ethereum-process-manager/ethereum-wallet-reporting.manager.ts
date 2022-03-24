@@ -25,7 +25,7 @@ export class EthereumTranasctionProcessManager implements OnApplicationBootstrap
     }
 
     onApplicationBootstrap() {
-        this.run(this.walletAddress);
+        // this.run(this.walletAddress);
     }
 
     private initManager() {}
@@ -68,7 +68,7 @@ export class EthereumTranasctionProcessManager implements OnApplicationBootstrap
          *  For swaps, it's likely that only the token0 amount will be different from the actual swap amount due to tax etc
          *  The output amount will go to the wallet directly and will be untaxed, so the transfer out event should be easily linked
          *  to the swap. The transfer in amount will likely need to be deduced using an increasing tax threshholdw
-         * 
+         *
          *  Build out a connection object of transfer-swap-transfer to better highlight the entire lifetime of the tx
          */
 
