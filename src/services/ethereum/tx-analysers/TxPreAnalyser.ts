@@ -22,7 +22,7 @@ export default class TxPreAnalyser implements IBaseAnalyser {
                 success: false,
                 shouldContinue: false,
                 resultType: AnalysisResultType[AnalysisResultType.potentialMigrationOrAirdrop],
-                transactionInfo: null,
+                transactionActions: null,
             };
         }
 
@@ -31,7 +31,7 @@ export default class TxPreAnalyser implements IBaseAnalyser {
                 success: false,
                 shouldContinue: false,
                 resultType: AnalysisResultType[AnalysisResultType.simpleTransfer],
-                transactionInfo: null,
+                transactionActions: null,
             };
         }
 
@@ -42,7 +42,7 @@ export default class TxPreAnalyser implements IBaseAnalyser {
                 success: false,
                 shouldContinue: false,
                 resultType: AnalysisResultType[AnalysisResultType.potentialMigrationOrAirdrop],
-                transactionInfo: null,
+                transactionActions: null,
             };
         }
 
@@ -50,7 +50,7 @@ export default class TxPreAnalyser implements IBaseAnalyser {
             success: true,
             shouldContinue: true,
             resultType: AnalysisResultType[AnalysisResultType.preAnalyseSuccess],
-            transactionInfo: null,
+            transactionActions: null,
         };
     }
 }

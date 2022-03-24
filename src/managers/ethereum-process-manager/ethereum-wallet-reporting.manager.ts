@@ -47,11 +47,12 @@ export class EthereumTranasctionProcessManager implements OnApplicationBootstrap
 
         //Weird - 0x24cf38b4dc45b0c006b7fe467e029ea48ff1a14cc4f753209967a2970f00aaaf
 
+        txsForWallet = txsForWallet.sort((a, b) => parseInt(a.timeStamp) - parseInt(b.timeStamp));
         console.log('Total TXs: ' + txsForWallet.length);
-        // txsForWallet = txsForWallet.slice(0, 10);
-        txsForWallet = [
-            txsForWallet.find((x) => x.hash === '0xc6e948515f779394ca29d166b3d56b8c1b0666387c92c172db9bd4c02bab2296'),
-        ];
+        txsForWallet = txsForWallet.slice(0, 5);
+        // txsForWallet = [
+        //     txsForWallet.find((x) => x.hash === '0xc6e948515f779394ca29d166b3d56b8c1b0666387c92c172db9bd4c02bab2296'),
+        // ];
 
         /*
          *  ETH theory
@@ -114,7 +115,7 @@ export class EthereumTranasctionProcessManager implements OnApplicationBootstrap
 
         let allSuccesses = processResults.filter((x) => x.success);
         let allFailures = processResults.filter((x) => !x.success);
-        let properFailures = processResults.filter((x) => !x.success && !x.unprocessable);
+        let properFailures = processResults.filter((x) => !x.success && x.isProcessable);
         let numFailures = allFailures.length;
         let numSuccesses = allSuccesses.length;
 
@@ -131,9 +132,18 @@ export class EthereumTranasctionProcessManager implements OnApplicationBootstrap
             outStrs.forEach((x) => console.log(x));
         }
 
+        for (let element of allSuccesses) {
+            let nearestEthPrice = await this.dbRepo.getNearestEthPrices(
+                element.transactionAnalysisDetails.nearest5minTimestampRange,
+            );
+            element['ethPriceAtTime'] = nearestEthPrice;
+        }
+
         // let properFailures = allFailures.filter((x) => {
         //     return x.analysisResults !== 'migration' && x.analysisResults !== 'oneTransferEvent';
         // });
+
+        await this.dbRepo.upsertTransactionAnalysisResult(allSuccesses, walletAddress);
 
         console.log('\nFinished.');
         // console.log(properFailures.map((x) => x.analysisResults));

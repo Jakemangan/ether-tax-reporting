@@ -1,5 +1,6 @@
 export enum AnalysisResultType {
     success,
+    failure,
     preAnalyseSuccess,
     potentialMigrationOrAirdrop,
     simpleTransfer,
@@ -19,7 +20,8 @@ export enum AnalysisResultType {
 
 export const AnalysisResultMessages = {
     success: 'Success.',
-    preAnalyseSuccess: 'Success.',
+    failure: 'Failure',
+    preAnalyseSuccess: '(Pre) Success.',
     simpleTransfer: 'TX only has one transfer event, likely a simple transfer between wallets. Nothing to process.',
     potentialMigrationOrAirdrop: 'Tranasction has high number of transfer events - Likely a migration or aidrop.',
     unableToFindContractAddressForToken: 'Unable to find token details for contract address, cannot process tx',

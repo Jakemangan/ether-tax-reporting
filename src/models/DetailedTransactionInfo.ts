@@ -2,12 +2,12 @@ import { AnalysisResultType } from './ProcessTxErrors';
 import { TokenDetails } from './tokenDetails';
 
 export interface TransactionAction {
-    tokenExitAmount: number;
-    tokenExitDetails: TokenDetails;
+    tokenInAmount: number;
+    tokenInDetails: TokenDetails;
     intermediateSwaps?: IntermediateSwap[];
     destinationAddress: string;
-    tokenEntryAmount: number;
-    tokenEntryDetails: TokenDetails;
+    tokenOutAmount: number;
+    tokenOutDetails: TokenDetails;
 }
 
 export interface IntermediateSwap {

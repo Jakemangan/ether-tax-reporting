@@ -19,7 +19,7 @@ export default class TxSingleSwapAnalyser implements IBaseAnalyser {
                 success: false,
                 shouldContinue: true,
                 resultType: AnalysisResultType[AnalysisResultType.moreThanOneSwapLog],
-                transactionInfo: null,
+                transactionActions: null,
             };
         }
         if (swapEvents.length === 0) {
@@ -27,7 +27,7 @@ export default class TxSingleSwapAnalyser implements IBaseAnalyser {
                 success: false,
                 shouldContinue: true,
                 resultType: AnalysisResultType[AnalysisResultType.noSwapLogs],
-                transactionInfo: null,
+                transactionActions: null,
             };
         }
 
@@ -48,7 +48,7 @@ export default class TxSingleSwapAnalyser implements IBaseAnalyser {
                 success: false,
                 shouldContinue: true,
                 resultType: AnalysisResultType[AnalysisResultType.couldNotDetermineSwapIndexes],
-                transactionInfo: null,
+                transactionActions: null,
             };
         }
 
@@ -61,7 +61,7 @@ export default class TxSingleSwapAnalyser implements IBaseAnalyser {
                 success: false,
                 shouldContinue: true,
                 resultType: AnalysisResultType[AnalysisResultType.couldNotDetermineTokenOutTransferEvent],
-                transactionInfo: null,
+                transactionActions: null,
             };
         }
         let tokenOutContractAddress = tokenOutTransferEvent.address;
@@ -74,7 +74,7 @@ export default class TxSingleSwapAnalyser implements IBaseAnalyser {
                 success: false,
                 shouldContinue: true,
                 resultType: AnalysisResultType[AnalysisResultType.couldNotDetermineTokenInTransferEvent],
-                transactionInfo: null,
+                transactionActions: null,
             };
         }
         let tokenInContractAddress = tokenInTransferEvent.address;
@@ -87,12 +87,12 @@ export default class TxSingleSwapAnalyser implements IBaseAnalyser {
                 success: true,
                 shouldContinue: false,
                 resultType: AnalysisResultType[AnalysisResultType.success],
-                transactionInfo: [
+                transactionActions: [
                     {
-                        tokenEntryAmount: parseFloat(tokenOutAmountDecimal),
-                        tokenEntryDetails: tokenOutDetails,
-                        tokenExitAmount: parseFloat(tokenInAmountDecimal),
-                        tokenExitDetails: tokenInDetails,
+                        tokenOutAmount: parseFloat(tokenOutAmountDecimal),
+                        tokenOutDetails: tokenOutDetails,
+                        tokenInAmount: parseFloat(tokenInAmountDecimal),
+                        tokenInDetails: tokenInDetails,
                         destinationAddress: swapEvents[0].topics[2],
                     },
                 ],
@@ -102,12 +102,12 @@ export default class TxSingleSwapAnalyser implements IBaseAnalyser {
                 success: true,
                 shouldContinue: false,
                 resultType: AnalysisResultType[AnalysisResultType.success],
-                transactionInfo: [
+                transactionActions: [
                     {
-                        tokenExitAmount: parseFloat(tokenOutAmountDecimal),
-                        tokenExitDetails: tokenOutDetails,
-                        tokenEntryAmount: parseFloat(tokenInAmountDecimal),
-                        tokenEntryDetails: tokenInDetails,
+                        tokenInAmount: parseFloat(tokenOutAmountDecimal),
+                        tokenInDetails: tokenOutDetails,
+                        tokenOutAmount: parseFloat(tokenInAmountDecimal),
+                        tokenOutDetails: tokenInDetails,
                         destinationAddress: swapEvents[0].topics[2],
                     },
                 ],

@@ -30,11 +30,12 @@ export class EthereumTxProcessorService {
 
     public async processTxHash(txHash: string, walletAddress: string): Promise<EthereumTxProcessResult> {
         let analysers = this.getAnalysers();
-        let transactionAction: TransactionAction[] = [];
+        let transactionActions: TransactionAction[] = [];
         let analysisResults: AnalysisResults = {};
 
         let isSuccess = false;
-        let unprocessable = false;
+        let isProcessable = true;
+        let overallResultType: AnalysisResultType | string;
 
         const txDetails = await this.ethNodeService.getTransactionDetails(txHash);
         const numLogEvents = txDetails.txReceipt.logs.length;
@@ -50,8 +51,8 @@ export class EthereumTxProcessorService {
                 analysisMessage: this.getAnalysisMessage(result.resultType as string),
             };
 
-            //TX passed pre-analyse checks, continue to the proper analysers
             if (analyser.name === 'PRE_ANALYSIS' && result.success) {
+                //TX passed pre-analyse checks, continue to the proper analysers
                 this.debugLog('[Processor] Pre-analyse was successful, running analysers.');
                 continue;
             }
@@ -63,28 +64,32 @@ export class EthereumTxProcessorService {
                     }`,
                 );
                 if (!result.shouldContinue) {
+                    overallResultType = result.resultType;
                     this.debugLog('[Processor] Cannot continue with transaction.');
-                    unprocessable = true;
+                    isProcessable = false;
                     break;
                 }
+                overallResultType = AnalysisResultType[AnalysisResultType.failure];
                 continue;
             }
-            transactionAction = result.transactionInfo;
+            transactionActions = result.transactionActions;
             isSuccess = true;
+            overallResultType = AnalysisResultType[AnalysisResultType.success];
             this.debugLog(`[Processor] ${analyser.name} analysis was successful.`);
             break;
         }
 
         return {
             success: isSuccess,
-            unprocessable: unprocessable,
+            isProcessable: isProcessable,
             analysisResults: analysisResults,
+            overallResultType: overallResultType,
             transactionAnalysisDetails: {
                 txHash: txHash,
                 timestamp: txDetails.timestamp,
                 numberOfLogEvents: numLogEvents,
-                nearest5minTimestamp: this.getNearest5minTimestamp(txDetails.timestamp),
-                transactionActions: transactionAction,
+                nearest5minTimestampRange: this.getNearest5minTimestampRange(txDetails.timestamp),
+                transactionActions: transactionActions,
             },
         };
     }
@@ -108,11 +113,11 @@ export class EthereumTxProcessorService {
         //     return (outStr = 'Likely a simple transfer.');
 
         for (const action of input.transactionAnalysisDetails.transactionActions) {
-            let tokenOutDetails = action.tokenEntryDetails;
-            let tokenInDetails = action.tokenExitDetails;
+            let tokenOutDetails = action.tokenOutDetails;
+            let tokenInDetails = action.tokenInDetails;
 
             outStr.push(
-                `Swapped ${action.tokenEntryAmount} ${tokenOutDetails.symbol} for ${action.tokenExitAmount} ${tokenInDetails.symbol}`,
+                `Swapped ${action.tokenOutAmount} ${tokenOutDetails.symbol} for ${action.tokenInAmount} ${tokenInDetails.symbol}`,
             );
         }
 
@@ -123,8 +128,16 @@ export class EthereumTxProcessorService {
      *   PRIVATE METHODS
      */
 
-    private getNearest5minTimestamp(timestamp: number) {
-        return Math.round(timestamp / 300) * 300;
+    private getNearest5minTimestampRange(timestamp: number) {
+        let upper = Math.ceil(timestamp / 300) * 300;
+        let lower = Math.floor(timestamp / 300) * 300;
+        let nearest = Math.round(timestamp / 300) * 300;
+        return {
+            upper: upper,
+            base: timestamp,
+            nearest: nearest,
+            lower: lower,
+        };
     }
 
     private getAnalysers(): IBaseAnalyser[] {
