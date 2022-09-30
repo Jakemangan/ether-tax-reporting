@@ -24,6 +24,20 @@
           "uriFormat": "%s",
           "action": "debugWithChrome"
         }
+      },
+      {
+        "type": "node",
+        "request": "launch",
+        "name": "Launch Poloniex JS Program",
+        "skipFiles": ["<node_internals>/**"],
+        "program": "${workspaceFolder}\\src\\other\\poloniex-scraper2.js"
+      },
+      {
+        "type": "node",
+        "request": "launch",
+        "name": "Launch Json2CSV Program",
+        "skipFiles": ["<node_internals>/**"],
+        "program": "${workspaceFolder}\\src\\other\\jsontocsv.js"
       }
     ]
   }

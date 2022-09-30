@@ -12,7 +12,12 @@ export class EtherscanService {
         // if(isTest){
         //     return randomTestTx();
         // }
-        let url = `https://api.etherscan.io/api?module=account&action=tokentx&address=${walletAddress}&sort=desc&apikey=J2GAJVC7JJ4NZ331JCF41BPCCIFA73CHDU`;
+
+        /*
+         * BNB ETH SWITCH
+         */
+        // let url = `https://api.etherscan.io/api?module=account&action=tokentx&address=${walletAddress}&sort=desc&apikey=J2GAJVC7JJ4NZ331JCF41BPCCIFA73CHDU`;
+        let url = `https://api.bscscan.com/api?module=account&action=tokentx&address=${walletAddress}&sort=desc&apikey=F5YN3CR88QCV48MPYNFSBIEJ88GYZ1XY1H`;
         let res = (await axios.default.get(url)).data;
         return res.result;
     }

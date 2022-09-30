@@ -8,7 +8,14 @@ import { EthereumTransactionDetails } from 'src/models/ethereumTransactionDetail
 export class EthereumNodeService implements OnModuleInit {
     onReadySubject = new Subject<void>();
 
-    private readonly providerUrl = 'https://mainnet.infura.io/v3/bbe9d9217dc54b1895e1f9b3bfd251c9';
+    /*
+     * BNB ETH SWITCH
+     */
+
+    private readonly providerUrl =
+        'https://wild-delicate-layer.bsc.discover.quiknode.pro/33e07ee26892111758fcbbbaa7d5aae21d6070be/';
+    // private readonly providerUrl = 'https://rpc.ankr.com/bsc';
+    // private readonly providerUrl = 'https://mainnet.infura.io/v3/bbe9d9217dc54b1895e1f9b3bfd251c9';
     private readonly provider: any;
 
     private readonly transferSignature = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';

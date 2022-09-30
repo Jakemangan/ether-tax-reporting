@@ -10,6 +10,6 @@ async function bootstrap() {
     await app.listen(process.env.PORT || 5050);
 
     // let s = new WebScrapingService();
-    // s.scrapeWalletAddress('0x7cbbba14c573fa52aadad44c7ae8085dc0764ebd')
+    // s.scrapeWalletAddress('0x7cbbba14c573fa52aadad44c7ae8085dc0764ebd');
 }
 bootstrap();

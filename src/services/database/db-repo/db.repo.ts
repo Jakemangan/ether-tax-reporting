@@ -69,7 +69,7 @@ export class DatabaseRepo {
     async insertTokenDetails(tokenDetails: TokenDetails) {
         try {
             await this.db.pool.query(
-                'INSERT INTO "TokenDetails" ("contractAddress", "name", "symbol", "decimals") values ($1, $2, $3, $4)',
+                'INSERT INTO "TokenDetails" ("contractAddress", "name", "symbol", "decimals", "currency") values ($1, $2, $3, $4, \'BNB\')',
                 [tokenDetails.contractAddress, tokenDetails.name, tokenDetails.symbol, tokenDetails.decimals],
             );
         } catch (error) {
@@ -89,12 +89,18 @@ export class DatabaseRepo {
     }
 
     async getNearestEthPrices(timestampRange: TimestampRange): Promise<EthPriceOHLCV> {
+        /*
+         * BNB ETH SWITCH
+         */
         let resUpper: PgResult<EthPriceOHLCV> = await this.db.pool.query(
-            'SELECT * FROM "HistoricEthPrices" where date <= $1  order by date desc limit 1',
+            'SELECT * FROM "HistoricBnbPrices" where date <= $1  order by date desc limit 1',
             [timestampRange.nearest],
         );
+        /*
+         * BNB ETH SWITCH
+         */
         let resLower: PgResult<EthPriceOHLCV> = await this.db.pool.query(
-            'SELECT * FROM "HistoricEthPrices" where date >= $1  order by date asc limit 1',
+            'SELECT * FROM "HistoricBnbPrices" where date >= $1  order by date asc limit 1',
             [timestampRange.nearest],
         );
         if (resUpper.rows.length && resLower.rows.length) {

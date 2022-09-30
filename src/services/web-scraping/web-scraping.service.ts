@@ -147,6 +147,17 @@ export class WebScrapingService {
     private getTokenDetailsFromHtml(pageHtml: string): TokenDetails {
         const $ = cheerio.load(pageHtml);
 
+        /*
+        * Eth token name - 
+        * BNB token name - 
+        * 
+        * ETH token decimals - 
+        * BNB token decimals -
+        * 
+        * ETH token symbol - '#ContentPlaceHolder1_divSummary > div.row.mb-4 > div.col-md-6.mb-3.mb-md-0 > div > div.card-body > div.row.align-items-center > div.col-md-8.font-weight-medium'
+        * BNB token symbol - #ContentPlaceHolder1_divSummary > div.row.mb-4 > div:nth-child(2) > div > div.card-body > div.row.align-items-center > div.col-md-8 > div > a.text-truncate.d-block.mr-2
+        */
+
         let tokenName = $('#content > div.container.py-3 > div > div.mb-3.mb-lg-0 > h1 > div > span').text().trim();
         let tokenDecimals = $('#ContentPlaceHolder1_trDecimals > div > div.col-md-8')
             .text()
@@ -159,6 +170,8 @@ export class WebScrapingService {
             .replace(/[^a-zA-Z]/g, '')
             .trim();
 
+            
+
         return {
             contractAddress: '',
             decimals: parseInt(tokenDecimals),
@@ -169,10 +182,15 @@ export class WebScrapingService {
 
     private walletTransactionUrlBuilder(walletAddress: string, pageNumber: number = null) {
         let etherScanUrl;
+        /*
+         * BNB ETH SWITCH
+         */
         if (pageNumber) {
-            etherScanUrl = `https://etherscan.io/tokentxns?a=${walletAddress}&p=${pageNumber}`;
+            // etherScanUrl = `https://etherscan.io/tokentxns?a=${walletAddress}&p=${pageNumber}`;
+            etherScanUrl = `https://bscscan.com/tokentxns?a=${walletAddress}&p=${pageNumber}`;
         } else {
-            etherScanUrl = `https://etherscan.io/tokentxns?a=${walletAddress}`;
+            // etherScanUrl = `https://etherscan.io/tokentxns?a=${walletAddress}`;
+            etherScanUrl = `https://bscscan.com/tokentxns?a=${walletAddress}`;
         }
 
         let encodedTargetURI = encodeURIComponent(etherScanUrl);
@@ -185,10 +203,17 @@ export class WebScrapingService {
     }
 
     private tokenDetailsUrlBuilder(contractAddress) {
-        let etherscanUrl = 'https://etherscan.io/token/' + contractAddress;
+        /*
+         * BNB ETH SWITCH
+         */
+        // let etherscanUrl = 'https://etherscan.io/token/' + contractAddress;
+        let etherscanUrl = 'https://bscscan.com/token/' + contractAddress;
         let encodedTargetURI = encodeURIComponent(etherscanUrl);
-        let url = `https://app.scrapingbee.com/api/v1/?api_key=6TL8H95UWQZ4OKFPKRUCO894OVZ3FOJ3ZPU6WMQRJAQVNHSM5NKD9DELDAF43KU75Z58NFFEH6DHBM6B&url=${encodedTargetURI}&wait=3000`;
+        let url = `https://app.scrapingbee.com/api/v1/?api_key=EPVWWWXZDSMW4FDTEJ1PCRTHL8LFBK9HYG1F5TTVC9B55IOLZGIT241YB8PEGR29KIAS58HXCUC3J6Y3&url=${encodedTargetURI}&wait=3000`;
         return url;
+
+        //Github api key - EPVWWWXZDSMW4FDTEJ1PCRTHL8LFBK9HYG1F5TTVC9B55IOLZGIT241YB8PEGR29KIAS58HXCUC3J6Y3
+        //Gmail api key - 6TL8H95UWQZ4OKFPKRUCO894OVZ3FOJ3ZPU6WMQRJAQVNHSM5NKD9DELDAF43KU75Z58NFFEH6DHBM6B
     }
 
     public getTestTxHashes() {

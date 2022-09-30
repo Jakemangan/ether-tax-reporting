@@ -1,6 +1,8 @@
 import fetch from "node-fetch";
 import { promises as fs } from 'fs';
 
+console.log("Running Poloniex scraper");
+
 var month = 0; // January
 
 let year = 2021
@@ -28,7 +30,7 @@ for(let i = 0; i < timestamps.length; i++){
     let end = timestamps[i+1].timestamp;
     let endDate = timestamps[i+1].date;
 
-    let url = `https://poloniex.com/public?command=returnChartData&currencyPair=USDT_ETH&start=${start}&end=${end}&period=300`
+    let url = `https://poloniex.com/public?command=returnChartData&currencyPair=USDT_BNB&start=${start}&end=${end}&period=300`
     let data = await (await fetch(url)).json();
 
     for(let i = 0; i < data.length;i++){

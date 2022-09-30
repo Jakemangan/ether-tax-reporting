@@ -25,7 +25,7 @@ export class EthereumTranasctionProcessManager implements OnApplicationBootstrap
     }
 
     onApplicationBootstrap() {
-        // this.run(this.walletAddress);
+        this.run(this.walletAddress);
     }
 
     private initManager() {}
@@ -49,7 +49,7 @@ export class EthereumTranasctionProcessManager implements OnApplicationBootstrap
 
         txsForWallet = txsForWallet.sort((a, b) => parseInt(a.timeStamp) - parseInt(b.timeStamp));
         console.log('Total TXs: ' + txsForWallet.length);
-        txsForWallet = txsForWallet.slice(0, 5);
+        txsForWallet = txsForWallet.slice(0, 50);
         // txsForWallet = [
         //     txsForWallet.find((x) => x.hash === '0xc6e948515f779394ca29d166b3d56b8c1b0666387c92c172db9bd4c02bab2296'),
         // ];
@@ -143,7 +143,7 @@ export class EthereumTranasctionProcessManager implements OnApplicationBootstrap
         //     return x.analysisResults !== 'migration' && x.analysisResults !== 'oneTransferEvent';
         // });
 
-        await this.dbRepo.upsertTransactionAnalysisResult(allSuccesses, walletAddress);
+        // await this.dbRepo.upsertTransactionAnalysisResult(allSuccesses, walletAddress);
 
         console.log('\nFinished.');
         // console.log(properFailures.map((x) => x.analysisResults));
