@@ -10,6 +10,7 @@ import TxMultiSwapAnalyser from '../tx-analysers/TxMultiSwapAnalyser';
 import TxPreAnalyser from '../tx-analysers/TxPreAnalyser';
 import TxSingleSwapAnalyser from '../tx-analysers/TxSingleSwapAnalyser';
 import TxTransferAnalyser from '../tx-analysers/TxTransferAnalyser';
+import TxTransferApprovalAnalyser from '../tx-analysers/TxTransferApprovalAnalyser';
 
 @Injectable()
 export class EthereumTxProcessorService {
@@ -17,7 +18,7 @@ export class EthereumTxProcessorService {
 
     constructor(private ethNodeService: EthereumNodeService, private tokenService: TokenService) {}
 
-    public async processTxHash(txHash: string, walletAddress: string): Promise<EthereumTxProcessResult> {
+    public async processTxHash(txHash: string, walletAddress: string, count: number): Promise<EthereumTxProcessResult> {
         let analysers = this.getAnalysers();
         let transactionActions: TransactionAction[] = [];
         let analysisResults: AnalysisResults = {};
@@ -32,12 +33,20 @@ export class EthereumTxProcessorService {
         let transferEvents = this.ethNodeService.getAllTransferLogEventsFromTxReceipt(txDetails.txReceipt);
         let swapEvents = this.ethNodeService.getAllSwapLogEventsFromTxReceipt(txDetails.txReceipt);
 
+        console.log(`\nProcessing transaction (${count}) - ` + txHash);
+
         for (const analyser of analysers) {
             this.debugLog('[Processor] Trying to process using ' + analyser.name);
-            let result = await analyser.run(transferEvents, swapEvents, walletAddress, txDetails);
+            let result = await analyser.run(
+                transferEvents,
+                swapEvents,
+                txDetails.txReceipt.logs,
+                walletAddress,
+                txDetails,
+            );
             analysisResults[analyser.name] = {
                 analysisResultType: result.resultType,
-                analysisMessage: this.getAnalysisMessage(result.resultType as string),
+                analysisMessage: this.getAnalysisMessage(result.resultType as string, result.message),
             };
 
             if (analyser.name === 'PRE_ANALYSIS' && result.success) {
@@ -64,9 +73,20 @@ export class EthereumTxProcessorService {
             transactionActions = result.transactionActions;
             isSuccess = true;
             overallResultType = AnalysisResultType[AnalysisResultType.success];
-            this.debugLog(`[Processor] ${analyser.name} analysis was successful.`);
+            if (!result.other) {
+                this.debugLog(`[Processor] ${analyser.name} analysis was successful.`);
+            } else {
+                this.debugLog(`[Processor] ${analyser.name} analysis was successful with conditions:`);
+                this.debugLog(`[Processor]     Able to find exact match: ` + result.other.foundExactValueMatch);
+                this.debugLog(`[Processor]     Percentage range was used: ` + result.other.percentageRangeWasUsed);
+                this.debugLog(`[Processor]     Percentage range value: ` + result.other.percentageRangeValue);
+            }
             break;
         }
+
+        let nearest5minTimestampRange = this.getNearest5minTimestampRange(txDetails.timestamp);
+
+    
 
         return {
             success: isSuccess,
@@ -77,15 +97,18 @@ export class EthereumTxProcessorService {
                 txHash: txHash,
                 timestamp: txDetails.timestamp,
                 numberOfLogEvents: numLogEvents,
-                nearest5minTimestampRange: this.getNearest5minTimestampRange(txDetails.timestamp),
+                nearest5minTimestampRange: nearest5minTimestampRange,
                 transactionActions: transactionActions,
             },
         };
     }
 
-    getAnalysisMessage(type: string) {
+    getAnalysisMessage(type: string, errorMessage: string) {
         let message = AnalysisResultMessages[type];
         if (!message) {
+            if (errorMessage) {
+                return errorMessage;
+            }
             return 'No message set for result type.';
         }
         return message;
@@ -134,7 +157,8 @@ export class EthereumTxProcessorService {
         let transferAnalyser = new TxTransferAnalyser(this.ethNodeService, this.tokenService);
         let multiSwapAnalyser = new TxMultiSwapAnalyser(this.ethNodeService, this.tokenService);
         let preAnalyser = new TxPreAnalyser();
-        return [preAnalyser, multiSwapAnalyser, singleSwapAnalyser, transferAnalyser];
+        let transferApprovalAnalyser = new TxTransferApprovalAnalyser(this.ethNodeService, this.tokenService);
+        return [preAnalyser, transferApprovalAnalyser, multiSwapAnalyser, singleSwapAnalyser, transferAnalyser];
     }
 
     private debugLog(message: string) {

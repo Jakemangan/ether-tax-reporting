@@ -16,6 +16,7 @@ export enum AnalysisResultType {
     noSwapLogs,
     moreThan2UniqueAddressesInTransferLogs,
     multiSwapAnalyserFailure,
+    transferApprovalAnalyserFailure,
 }
 
 export const AnalysisResultMessages = {
@@ -37,4 +38,5 @@ export const AnalysisResultMessages = {
     noSwapLogs: 'No swap events are present in logs.',
     moreThan2UniqueAddressesInTransferLogs: 'More than 2 unique addresses in transfers',
     multiSwapAnalyserFailure: 'The MultiSwapAnalyser failed.',
+    // transferApprovalAnalyserFailure: 'The TransferApproval analyser failed.',
 };

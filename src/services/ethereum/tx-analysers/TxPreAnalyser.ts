@@ -11,6 +11,7 @@ export default class TxPreAnalyser implements IBaseAnalyser {
     async run(
         transferEvents: EventLog[],
         swapEvents: EventLog[],
+        allEvents: EventLog[],
         walletAddress: string,
         txDetails: EthereumTransactionDetails,
     ): Promise<TxAnalyserResult> {

@@ -59,7 +59,7 @@ export class EthereumWalletTrackingManager implements OnApplicationBootstrap {
         for (const tx of unseenTransactions) {
             try {
                 console.log('Processing tx - ' + tx.hash);
-                let res = await this.ethTxProcessor.processTxHash(tx.hash, walletAddress);
+                let res = await this.ethTxProcessor.processTxHash(tx.hash, walletAddress, 0);
                 processTxResults.push(res);
             } catch (error) {
                 console.log('Could not process tx - ' + error.message);

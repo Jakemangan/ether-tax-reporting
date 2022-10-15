@@ -7,6 +7,7 @@ export interface IBaseAnalyser {
     run(
         transferEvents: EventLog[],
         swapEvents: EventLog[],
+        allEvents: EventLog[],
         walletAddress: string,
         txDetails: EthereumTransactionDetails,
     ): Promise<TxAnalyserResult>;

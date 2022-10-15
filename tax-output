@@ -1,0 +1,323 @@
+{
+    "numFailures": 0,
+    "numSuccesses": 5,
+    "processResults": [
+        {
+            "success": true,
+            "isProcessable": true,
+            "analysisResults": {
+                "PRE_ANALYSIS": {
+                    "analysisResultType": "preAnalyseSuccess",
+                    "analysisMessage": "(Pre) Success."
+                },
+                "MULTI_SWAP": {
+                    "analysisResultType": "multiSwapAnalyserFailure",
+                    "analysisMessage": "The MultiSwapAnalyser failed."
+                },
+                "SINGLE_SWAP": {
+                    "analysisResultType": "couldNotDetermineSwapIndexes",
+                    "analysisMessage": "Could not determine swap indexes"
+                },
+                "TRANSFER": {
+                    "analysisResultType": "success",
+                    "analysisMessage": "Success."
+                }
+            },
+            "overallResultType": "success",
+            "transactionAnalysisDetails": {
+                "txHash": "0x0bb07233987a5f1fcf78d76b58925ead9ab99bef9c14b5de9bbb79564ef658fb",
+                "timestamp": 1616543378,
+                "numberOfLogEvents": 5,
+                "nearest5minTimestampRange": {
+                    "upper": 1616543400,
+                    "base": 1616543378,
+                    "nearest": 1616543400,
+                    "lower": 1616543100
+                },
+                "transactionActions": [
+                    {
+                        "tokenOutAmount": 2.66619873,
+                        "tokenOutDetails": {
+                            "contractAddress": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+                            "name": "Wrapped BNB",
+                            "symbol": "WBNB",
+                            "decimals": 18,
+                            "currency": "BNB"
+                        },
+                        "tokenInAmount": 1399710751.9888964,
+                        "tokenInDetails": {
+                            "contractAddress": "0x8076C74C5e3F5852037F31Ff0093Eeb8c8ADd8D3",
+                            "name": "SafeMoon",
+                            "symbol": "SAFEMOON",
+                            "decimals": 9,
+                            "currency": "BNB"
+                        },
+                        "destinationAddress": "idk"
+                    }
+                ]
+            },
+            "ethPriceAtTime": {
+                "date": "1616543400",
+                "high": "254.86",
+                "low": "254.86",
+                "open": "254.86",
+                "close": "254.86",
+                "weightedAverage": "254.861460040000000"
+            }
+        },
+        {
+            "success": true,
+            "isProcessable": true,
+            "analysisResults": {
+                "PRE_ANALYSIS": {
+                    "analysisResultType": "preAnalyseSuccess",
+                    "analysisMessage": "(Pre) Success."
+                },
+                "MULTI_SWAP": {
+                    "analysisResultType": "multiSwapAnalyserFailure",
+                    "analysisMessage": "The MultiSwapAnalyser failed."
+                },
+                "SINGLE_SWAP": {
+                    "analysisResultType": "couldNotDetermineSwapIndexes",
+                    "analysisMessage": "Could not determine swap indexes"
+                },
+                "TRANSFER": {
+                    "analysisResultType": "success",
+                    "analysisMessage": "Success."
+                }
+            },
+            "overallResultType": "success",
+            "transactionAnalysisDetails": {
+                "txHash": "0x9b80c2930cb6655468e174d1a0179115269772d2bcd34ac991b6c664837751d8",
+                "timestamp": 1616543588,
+                "numberOfLogEvents": 5,
+                "nearest5minTimestampRange": {
+                    "upper": 1616543700,
+                    "base": 1616543588,
+                    "nearest": 1616543700,
+                    "lower": 1616543400
+                },
+                "transactionActions": [
+                    {
+                        "tokenOutAmount": 0.0006,
+                        "tokenOutDetails": {
+                            "contractAddress": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+                            "name": "Wrapped BNB",
+                            "symbol": "WBNB",
+                            "decimals": 18,
+                            "currency": "BNB"
+                        },
+                        "tokenInAmount": 309523.228457319,
+                        "tokenInDetails": {
+                            "contractAddress": "0x8076C74C5e3F5852037F31Ff0093Eeb8c8ADd8D3",
+                            "name": "SafeMoon",
+                            "symbol": "SAFEMOON",
+                            "decimals": 9,
+                            "currency": "BNB"
+                        },
+                        "destinationAddress": "idk"
+                    }
+                ]
+            },
+            "ethPriceAtTime": {
+                "date": "1616543700",
+                "high": "254.53",
+                "low": "254.30",
+                "open": "254.30",
+                "close": "254.53",
+                "weightedAverage": "254.536384820000000"
+            }
+        },
+        {
+            "success": true,
+            "isProcessable": true,
+            "analysisResults": {
+                "PRE_ANALYSIS": {
+                    "analysisResultType": "preAnalyseSuccess",
+                    "analysisMessage": "(Pre) Success."
+                },
+                "MULTI_SWAP": {
+                    "analysisResultType": "multiSwapAnalyserFailure",
+                    "analysisMessage": "The MultiSwapAnalyser failed."
+                },
+                "SINGLE_SWAP": {
+                    "analysisResultType": "couldNotDetermineSwapIndexes",
+                    "analysisMessage": "Could not determine swap indexes"
+                },
+                "TRANSFER": {
+                    "analysisResultType": "success",
+                    "analysisMessage": "Success."
+                }
+            },
+            "overallResultType": "success",
+            "transactionAnalysisDetails": {
+                "txHash": "0x6117b9543b9a42d05a2370989eace2b59f4e2991b12b47881d856169bd0555e3",
+                "timestamp": 1616605427,
+                "numberOfLogEvents": 5,
+                "nearest5minTimestampRange": {
+                    "upper": 1616605500,
+                    "base": 1616605427,
+                    "nearest": 1616605500,
+                    "lower": 1616605200
+                },
+                "transactionActions": [
+                    {
+                        "tokenOutAmount": 0.56508854,
+                        "tokenOutDetails": {
+                            "contractAddress": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+                            "name": "Wrapped BNB",
+                            "symbol": "WBNB",
+                            "decimals": 18,
+                            "currency": "BNB"
+                        },
+                        "tokenInAmount": 364823558.06584316,
+                        "tokenInDetails": {
+                            "contractAddress": "0x8076C74C5e3F5852037F31Ff0093Eeb8c8ADd8D3",
+                            "name": "SafeMoon",
+                            "symbol": "SAFEMOON",
+                            "decimals": 9,
+                            "currency": "BNB"
+                        },
+                        "destinationAddress": "idk"
+                    }
+                ]
+            },
+            "ethPriceAtTime": {
+                "date": "1616605500",
+                "high": "260.94",
+                "low": "260.94",
+                "open": "260.94",
+                "close": "260.94",
+                "weightedAverage": "260.946530090000000"
+            }
+        },
+        {
+            "success": true,
+            "isProcessable": true,
+            "analysisResults": {
+                "PRE_ANALYSIS": {
+                    "analysisResultType": "preAnalyseSuccess",
+                    "analysisMessage": "(Pre) Success."
+                },
+                "MULTI_SWAP": {
+                    "analysisResultType": "multiSwapAnalyserFailure",
+                    "analysisMessage": "The MultiSwapAnalyser failed."
+                },
+                "SINGLE_SWAP": {
+                    "analysisResultType": "couldNotDetermineSwapIndexes",
+                    "analysisMessage": "Could not determine swap indexes"
+                },
+                "TRANSFER": {
+                    "analysisResultType": "success",
+                    "analysisMessage": "Success."
+                }
+            },
+            "overallResultType": "success",
+            "transactionAnalysisDetails": {
+                "txHash": "0x86df293ab897795001427337a3d058aaf77fd272e816d7b9761b1e0ef2167645",
+                "timestamp": 1616839609,
+                "numberOfLogEvents": 5,
+                "nearest5minTimestampRange": {
+                    "upper": 1616839800,
+                    "base": 1616839609,
+                    "nearest": 1616839500,
+                    "lower": 1616839500
+                },
+                "transactionActions": [
+                    {
+                        "tokenOutAmount": 1.29761274,
+                        "tokenOutDetails": {
+                            "contractAddress": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+                            "name": "Wrapped BNB",
+                            "symbol": "WBNB",
+                            "decimals": 18,
+                            "currency": "BNB"
+                        },
+                        "tokenInAmount": 16747501969.993532,
+                        "tokenInDetails": {
+                            "contractAddress": "0x2A9718defF471f3Bb91FA0ECEAB14154F150a385",
+                            "name": "ElonGate",
+                            "symbol": "ElonGateCSupply",
+                            "decimals": 9,
+                            "currency": "BNB"
+                        },
+                        "destinationAddress": "idk"
+                    }
+                ]
+            },
+            "ethPriceAtTime": {
+                "date": "1616839500",
+                "high": "260.88",
+                "low": "260.00",
+                "open": "260.30",
+                "close": "260.00",
+                "weightedAverage": "260.395137150000000"
+            }
+        },
+        {
+            "success": true,
+            "isProcessable": true,
+            "analysisResults": {
+                "PRE_ANALYSIS": {
+                    "analysisResultType": "preAnalyseSuccess",
+                    "analysisMessage": "(Pre) Success."
+                },
+                "MULTI_SWAP": {
+                    "analysisResultType": "multiSwapAnalyserFailure",
+                    "analysisMessage": "The MultiSwapAnalyser failed."
+                },
+                "SINGLE_SWAP": {
+                    "analysisResultType": "couldNotDetermineSwapIndexes",
+                    "analysisMessage": "Could not determine swap indexes"
+                },
+                "TRANSFER": {
+                    "analysisResultType": "success",
+                    "analysisMessage": "Success."
+                }
+            },
+            "overallResultType": "success",
+            "transactionAnalysisDetails": {
+                "txHash": "0xcf879cbc8d3bb26cefa7043b1210011d7015494cd807bee1356f7740f10cd112",
+                "timestamp": 1616840461,
+                "numberOfLogEvents": 5,
+                "nearest5minTimestampRange": {
+                    "upper": 1616840700,
+                    "base": 1616840461,
+                    "nearest": 1616840400,
+                    "lower": 1616840400
+                },
+                "transactionActions": [
+                    {
+                        "tokenOutAmount": 1.15348331,
+                        "tokenOutDetails": {
+                            "contractAddress": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+                            "name": "Wrapped BNB",
+                            "symbol": "WBNB",
+                            "decimals": 18,
+                            "currency": "BNB"
+                        },
+                        "tokenInAmount": 14046484402.517733,
+                        "tokenInDetails": {
+                            "contractAddress": "0x2A9718defF471f3Bb91FA0ECEAB14154F150a385",
+                            "name": "ElonGate",
+                            "symbol": "ElonGateCSupply",
+                            "decimals": 9,
+                            "currency": "BNB"
+                        },
+                        "destinationAddress": "idk"
+                    }
+                ]
+            },
+            "ethPriceAtTime": {
+                "date": "1616840400",
+                "high": "258.67",
+                "low": "258.34",
+                "open": "258.67",
+                "close": "258.34",
+                "weightedAverage": "258.350284470000000"
+            }
+        }
+    ],
+    "allFailures": [],
+    "properFailures": []
+}

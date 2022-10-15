@@ -130,7 +130,7 @@ export class DatabaseRepo {
             let resultDbo: TxAnalysisResultDbo = {
                 hash: e.transactionAnalysisDetails.txHash,
                 resultType: e.overallResultType as string,
-                avgEthPriceAtTime: e.ethPriceAtTime.close,
+                avgEthPriceAtTime: e.currencyPriceAtTime.close,
             };
             //Concat all actions for element into list of total actions to insert into DB
             actionDbos = actionDbos.concat(

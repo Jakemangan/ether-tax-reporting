@@ -16,7 +16,12 @@ export default class TxMultiSwapAnalyser implements IBaseAnalyser {
 
     constructor(private ethNodeService: EthereumNodeService, private tokenService: TokenService) {}
 
-    async run(transferEvents: EventLog[], swapEvents: EventLog[], walletAddress: string): Promise<TxAnalyserResult> {
+    async run(
+        transferEvents: EventLog[],
+        swapEvents: EventLog[],
+        allEvents: EventLog[],
+        walletAddress: string,
+    ): Promise<TxAnalyserResult> {
         this.walletAddress = walletAddress;
         this.swapEvents = swapEvents;
 

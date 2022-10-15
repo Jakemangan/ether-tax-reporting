@@ -28,6 +28,7 @@ export default class TxTransferAnalyser implements IBaseAnalyser {
          *           - Last event is amount of TOKEN bought
          *           - WETH event in logs is amount of WETH sold for TOKEn
          *
+         *  IMPORTANT - The approval log may provide a way to bridge between the transfer and swap events e.g. tx - https://bscscan.com/tx/0x0339bc242b92da65710990e4c5a251ee4382e74ded576d698e82c3a5019ea74d#eventlog
          */
 
         transferEvents = transferEvents.filter((x) => !x.topics.includes(this.NULL_ADDRESS)); //Remove any events concerned with the NULL (burn) address, as these are irrelevant

@@ -12,6 +12,7 @@ import { EthereumWalletTrackingManager } from './managers/ethereum-wallet-tracki
 import { AppGateway } from './app.gateway';
 import { TokenService } from './services/token/token.service';
 import { WaitinglistController } from './controllers/waitinglist/waitinglist.controller';
+import { CsvProcessorService } from './services/csv-processor/csv-processor.service';
 
 @Module({
     imports: [],
@@ -28,6 +29,7 @@ import { WaitinglistController } from './controllers/waitinglist/waitinglist.con
         DatabaseRepo,
         AppGateway,
         TokenService,
+        CsvProcessorService,
     ],
 })
 export class AppModule {}

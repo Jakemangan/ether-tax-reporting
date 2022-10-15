@@ -6,6 +6,8 @@ import { EthereumNodeService } from 'src/services/ethereum/ethereum-node/ethereu
 import { EthereumTxProcessorService } from 'src/services/ethereum/ethereum-tx-processor/ethereum-tx-processor.service';
 import { EtherscanService } from 'src/services/etherscan/etherscan.service';
 import { WebScrapingService } from 'src/services/web-scraping/web-scraping.service';
+import { writeFileSync } from 'fs';
+import { CsvProcessorService } from 'src/services/csv-processor/csv-processor.service';
 
 @Injectable()
 export class EthereumTranasctionProcessManager implements OnApplicationBootstrap {
@@ -18,6 +20,7 @@ export class EthereumTranasctionProcessManager implements OnApplicationBootstrap
         private ethTxProcessor: EthereumTxProcessorService,
         private etherscanService: EtherscanService,
         private dbRepo: DatabaseRepo,
+        private csvProcessor: CsvProcessorService,
     ) {
         ethNodeService.onReadySubject.pipe(take(1)).subscribe(() => {
             console.log('Ethereum manager ready.');
@@ -49,10 +52,13 @@ export class EthereumTranasctionProcessManager implements OnApplicationBootstrap
 
         txsForWallet = txsForWallet.sort((a, b) => parseInt(a.timeStamp) - parseInt(b.timeStamp));
         console.log('Total TXs: ' + txsForWallet.length);
-        txsForWallet = txsForWallet.slice(0, 50);
-        // txsForWallet = [
-        //     txsForWallet.find((x) => x.hash === '0xc6e948515f779394ca29d166b3d56b8c1b0666387c92c172db9bd4c02bab2296'),
-        // ];
+        // txsForWallet = txsForWallet.slice(0, 25);
+        txsForWallet = [
+            txsForWallet.find((x) => x.hash === '0x0e2f64862fbce179fa6b7106a8e0103790db4704fa14ac863cd529afd42f5bc3'),
+        ];
+
+        //MPEPE - 0x0339bc242b92da65710990e4c5a251ee4382e74ded576d698e82c3a5019ea74d
+        //KIBA - 0xcf910a26441e53777dd702f92053b5527a87c0b841a27272a0c1d3b9a13c3e75
 
         /*
          *  ETH theory
@@ -93,11 +99,33 @@ export class EthereumTranasctionProcessManager implements OnApplicationBootstrap
          *         search for the specified wallet and return using the details of that transfer
          */
 
+        //Non-parallelised
+        let count = 1;
         for (const tx of txsForWallet) {
-            console.log('\nProcessing transaction - ' + tx.hash);
-            let res = await this.ethTxProcessor.processTxHash(tx.hash, walletAddress);
+            // console.log(`\nProcessing transaction (${count}) - ` + tx.hash);
+            let res = await this.ethTxProcessor.processTxHash(tx.hash, walletAddress, count);
             processResults.push(res);
+            count++;
         }
+
+        /*
+         * Promised results
+         */
+
+        // let count = 1;
+        // let promises = [];
+        // for (const tx of txsForWallet) {
+        //     let promise = new Promise((resolve) => {
+        //         // console.log(`\nProcessing transaction (${count}) - ` + tx.hash);
+        //         let res = this.ethTxProcessor.processTxHash(tx.hash, walletAddress, count);
+        //         resolve(res);
+        //     });
+        //     promises.push(promise);
+        //     count++;
+        //     // processResults.push(res);
+        // }
+
+        // processResults = await Promise.all(promises);
 
         // for (const tx of txsForWallet) {
         //     try {
@@ -118,6 +146,7 @@ export class EthereumTranasctionProcessManager implements OnApplicationBootstrap
         let properFailures = processResults.filter((x) => !x.success && x.isProcessable);
         let numFailures = allFailures.length;
         let numSuccesses = allSuccesses.length;
+        let numProperFailures = properFailures.length;
 
         let successesWithMoreThanOneAction = processResults.filter(
             (x) => x.transactionAnalysisDetails.transactionActions.length > 1,
@@ -136,7 +165,8 @@ export class EthereumTranasctionProcessManager implements OnApplicationBootstrap
             let nearestEthPrice = await this.dbRepo.getNearestEthPrices(
                 element.transactionAnalysisDetails.nearest5minTimestampRange,
             );
-            element['ethPriceAtTime'] = nearestEthPrice;
+            element['currencyName'] = 'BNB'; //ETH BNB SWITCH
+            element['currencyPriceAtTime'] = nearestEthPrice;
         }
 
         // let properFailures = allFailures.filter((x) => {
@@ -146,6 +176,20 @@ export class EthereumTranasctionProcessManager implements OnApplicationBootstrap
         // await this.dbRepo.upsertTransactionAnalysisResult(allSuccesses, walletAddress);
 
         console.log('\nFinished.');
+
+        let outputObj = {
+            numSuccesses,
+            numFailures,
+            numProperFailures,
+            processResults,
+            allFailures,
+            properFailures,
+        };
+
+        writeFileSync('./tax-output-promisified.json', JSON.stringify(outputObj), { flag: 'w' });
+
+        this.csvProcessor.process(processResults);
+
         // console.log(properFailures.map((x) => x.analysisResults));
     }
 }

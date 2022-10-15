@@ -6,4 +6,6 @@ export interface TxAnalyserResult {
     shouldContinue: boolean;
     resultType: AnalysisResultType | string;
     transactionActions: TransactionAction[];
+    other?: any;
+    message?: string;
 }

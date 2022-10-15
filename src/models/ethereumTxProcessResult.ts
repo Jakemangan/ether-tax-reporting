@@ -10,7 +10,7 @@ export interface EthereumTxProcessResult {
     analysisResults: AnalysisResults;
     overallResultType: AnalysisResultType | string;
     transactionAnalysisDetails: TransactionAnalysisDetails;
-    ethPriceAtTime?: EthPriceOHLCV;
+    currencyPriceAtTime?: EthPriceOHLCV;
 }
 
 export interface TransactionAnalysisDetails {
