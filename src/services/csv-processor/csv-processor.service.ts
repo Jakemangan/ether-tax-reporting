@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CsvOutput } from 'src/models/CsvOutput';
 import { EthereumTxProcessResult } from 'src/models/ethereumTxProcessResult';
+let xlsx = require('json-as-xlsx');
 
 @Injectable()
 export class CsvProcessorService {
@@ -12,7 +13,7 @@ export class CsvProcessorService {
         results.forEach((result) => {
             let csvOutput: CsvOutput = {
                 txHash: result.transactionAnalysisDetails.txHash,
-                date: new Date(result.transactionAnalysisDetails.timestamp * 1000),
+                date: new Date(result.transactionAnalysisDetails.timestamp * 1000).toISOString(),
                 currency: 'BNB',
                 currencyPriceInDollars: null,
                 valueOfTransaction: null,
@@ -55,8 +56,36 @@ export class CsvProcessorService {
             csvOutput.tokensInAmount = result.transactionAnalysisDetails.transactionActions[0].tokenInAmount;
             csvOutput.tokensInPricePerToken = priceData.tokensInPricePerToken;
 
-            console.log(csvOutput);
+            // console.log(csvOutput);
+            csvOutputLines.push(csvOutput);
         });
+
+        let xlxsSettings = {
+            fileName: 'tax-output', // Name of the resulting spreadsheet
+            extraLength: 3, // A bigger number means that columns will be wider
+        };
+
+        let xlsxData = [
+            {
+                sheet: 'Output',
+                columns: [
+                    { label: 'TxHash', value: 'txHash' },
+                    { label: 'date', value: 'date' },
+                    { label: 'currency', value: 'currency' },
+                    { label: 'currencyPriceInDollars', value: 'currencyPriceInDollars' },
+                    { label: 'valueOfTransaction', value: 'valueOfTransaction' },
+                    { label: 'tokensOutAmount', value: 'tokensOutAmount' },
+                    { label: 'tokensOutSymbol', value: 'tokensOutSymbol' },
+                    { label: 'tokensOutPricePerToken', value: 'tokensOutPricePerToken' },
+                    { label: 'tokensInAmount', value: 'tokensInAmount' },
+                    { label: 'tokensInSymbol', value: 'tokensInSymbol' },
+                    { label: 'tokensInPricePerToken', value: 'tokensInPricePerToken' },
+                ],
+                content: csvOutputLines,
+            },
+        ];
+
+        xlsx(xlsxData, xlxsSettings);
     }
 
     // public getValueOfTransaction(result: EthereumTxProcessResult) {

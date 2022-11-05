@@ -1,6 +1,6 @@
 export interface CsvOutput {
     txHash: string;
-    date: Date;
+    date: string;
     currency: string;
     currencyPriceInDollars: number;
     valueOfTransaction: number;

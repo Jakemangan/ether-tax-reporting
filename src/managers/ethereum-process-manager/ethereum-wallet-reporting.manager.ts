@@ -53,9 +53,9 @@ export class EthereumTranasctionProcessManager implements OnApplicationBootstrap
         txsForWallet = txsForWallet.sort((a, b) => parseInt(a.timeStamp) - parseInt(b.timeStamp));
         console.log('Total TXs: ' + txsForWallet.length);
         // txsForWallet = txsForWallet.slice(0, 25);
-        txsForWallet = [
-            txsForWallet.find((x) => x.hash === '0x0e2f64862fbce179fa6b7106a8e0103790db4704fa14ac863cd529afd42f5bc3'),
-        ];
+        // txsForWallet = [
+        //     txsForWallet.find((x) => x.hash === '0x0e2f64862fbce179fa6b7106a8e0103790db4704fa14ac863cd529afd42f5bc3'),
+        // ];
 
         //MPEPE - 0x0339bc242b92da65710990e4c5a251ee4382e74ded576d698e82c3a5019ea74d
         //KIBA - 0xcf910a26441e53777dd702f92053b5527a87c0b841a27272a0c1d3b9a13c3e75
