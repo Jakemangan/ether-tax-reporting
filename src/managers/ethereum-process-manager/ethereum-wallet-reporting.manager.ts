@@ -161,7 +161,7 @@ export class EthereumTranasctionProcessManager implements OnApplicationBootstrap
             outStrs.forEach((x) => console.log(x));
         }
 
-        for (let element of allSuccesses) {
+        for (let element of processResults) {
             let nearestEthPrice = await this.dbRepo.getNearestEthPrices(
                 element.transactionAnalysisDetails.nearest5minTimestampRange,
             );

@@ -28,6 +28,7 @@ export class CsvProcessorService {
             };
 
             if (!result.success) {
+                csvOutput.currencyPriceInDollars = result.currencyPriceAtTime.close;
                 csvOutputLines.push(csvOutput);
                 return;
             }
@@ -61,7 +62,7 @@ export class CsvProcessorService {
         });
 
         let xlxsSettings = {
-            fileName: 'tax-output', // Name of the resulting spreadsheet
+            fileName: 'tax-output-all-currencyprices', // Name of the resulting spreadsheet
             extraLength: 3, // A bigger number means that columns will be wider
         };
 
